@@ -1,0 +1,589 @@
+// $discoverDailyDark: rgba(174, 90, 109, 1);
+// $discoverDailyLight: white;
+// $discoverDailyPercentage: 25%;
+// $spotifyGreen: #1DB954;
+// $textColor: rgb(12, 38, 88);
+
+$backgroundColor: #121212;
+$discoverDailyPercentage: 25%;
+$spotifyGreen: #1DB954;
+$textColor:white;
+
+body {
+    background-color: $backgroundColor;
+}
+
+.DiscoverDailyMain {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: 'Gotham';
+    color: $textColor;
+    position: relative;
+    // background-image: linear-gradient(to left, $discoverDailyLight, $discoverDailyPercentage, $discoverDailyDark);
+
+    h1 {
+        font-size: 6rem;
+    }
+
+    h3 {
+        font-size: 2rem;
+        margin: 1.75% 0;
+    }
+
+    button {
+        font-size: 2.5rem;
+        margin-top: 1%;
+    }
+}
+
+.loadingCircle {
+    color: $textColor !important;
+}
+
+.discoverDailyLeftColumn {
+    min-height: 100vh;
+    width: calc(100vw - 105vh);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    float: left;
+}
+
+.discoverDailyRightColumn {
+    height: 100vh;
+    margin: 0;
+    float: right;
+}
+
+.spotify-button {
+    background-color: $spotifyGreen;
+    border: none;
+    color: white;
+    padding: 0.75% 3%;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 100px;
+    font-size: 3rem;
+    margin: 0;
+    text-decoration: none;
+    outline: none !important;
+}
+
+.spotify-button:hover {
+    background-color: #22dd63 !important;
+}
+
+.spotify-button:active, .spotify-button:focus, .spotify-button:disabled {
+    background-color: #15843c !important;
+}
+
+.spotify-red {
+    background-color: #ff3419 !important;
+}
+
+.spotify-red:hover {
+    background-color:#f01800 !important;
+}
+
+.spotify-red:active, .spotify-red:focus, .spotify-red:disabled {
+    background-color: #cc1800 !important;
+}
+
+.stripe-blurple {
+    background-color: #625AFA !important;
+}
+
+.stripe-blurple:hover {
+    background-color:#4038d1 !important;
+}
+
+.stripe-blurple:active, .stripe-blurple:focus, .stripe-blurple:disabled {
+    background-color: #6e66ff !important;
+}
+
+.imageRow {
+    width: max-content;
+    margin: 0;
+    height: 25vh;
+}
+
+.imageCol {
+    width: 25vh;
+    height: 25vh;
+    float: right;
+
+    img {
+        width: 25vh;
+    }
+}
+
+.playlistOptionsMainRow {
+    margin-left: 4%;
+}
+
+// mobile
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+
+    // .DiscoverDailyMain {
+    //     background-image: linear-gradient(to top, $discoverDailyLight, $discoverDailyPercentage, $discoverDailyDark);
+    // }
+    
+    .discoverDailyRightColumn {
+        display: none;
+    }
+
+    .discoverDailyLeftColumn {
+        width: 100% !important;
+        text-align: center;
+
+        h1 {
+            font-size: 6vw;
+        }
+
+        h3 {
+            font-size: 3vw;
+        }
+
+        button {
+            font-size: 4vw;
+            float: inherit;
+        }
+    }
+
+    .playlistOptionsMainRow {
+        margin-left: 0;
+    }
+}
+
+// 4x3
+@media only screen and (max-width: 1800px) and (min-height: 900px) {
+    .imageCol0 {
+        display: none;
+    }
+
+    .discoverDailyLeftColumn {
+        width: calc(100vw - 75vh);
+    }
+}
+
+// 4x2
+@media only screen and (max-width: 1500px) and (min-height: 900px) {
+    .imageCol1 {
+        display: none;
+    }
+
+    .discoverDailyLeftColumn {
+        width: calc(100vw - 50vh);
+    }
+}
+
+//4x1
+@media only screen and (max-width: 1200px) and (min-height: 900px) {
+    .imageCol2 {
+        display: none;
+    }
+
+    .discoverDailyLeftColumn {
+        width: calc(100vw - 25vh);
+    }
+}
+
+// 3x3
+@media only screen and (max-height: 900px) {
+    .imageRow3, .imageCol0 {
+        display: none;
+    }
+
+    .imageRow {
+        height: 33.33vh;
+    }
+    
+    .imageCol {
+        width: 33.33vh;
+        height: 33.33vh;
+        float: right;
+    
+        img {
+            width: 33.33vh;
+        }
+    }
+}
+
+//3x2
+@media only screen and (max-width: 1500px) and (min-height: 600px) and (max-height: 900px) {
+    .imageCol1 {
+        display: none;
+    }
+
+    .discoverDailyLeftColumn {
+        width: calc(100vw - 66.66vh);
+    }
+}
+
+
+// 3x1
+@media only screen and (max-width: 1200px) and (min-height: 600px) and (max-height: 900px) {
+    .imageCol2 {
+        display: none;
+    }
+
+    .discoverDailyLeftColumn {
+        width: calc(100vw - 33.33vh);
+    }
+}
+
+// 3x1 centered
+@media only screen and (max-width: 900px) and (min-height: 600px) and (max-height: 900px) {
+    // .DiscoverDailyMain {
+    //     background-image: linear-gradient(to top, $discoverDailyLight, $discoverDailyPercentage, $discoverDailyDark);
+    // }
+
+    .discoverDailyLeftColumn {
+        text-align: center;
+
+        button {
+            float: inherit;
+        }
+    }
+
+    .playlistOptionsMainRow {
+        margin-left: 0;
+    }
+
+    .MuiCardHeader-root {
+        margin: 0 auto;
+    }
+}
+
+// 2x2
+@media only screen and (max-height: 600px) {
+    .imageRow3, .imageRow2, .imageCol0, .imageCol1 {
+        display: none;
+    }
+
+    .imageRow {
+        height: 50vh;
+    }
+    
+    .imageCol {
+        width: 50vh;
+        height: 50vh;
+        float: right;
+    
+        img {
+            width: 50vh;
+        }
+    }
+}
+
+//2x1
+@media only screen and (max-width: 1500px) and (max-height: 600px) {
+    .imageCol2 {
+        display: none;
+    }
+
+    .discoverDailyLeftColumn {
+        width: calc(100vw - 50vh);
+    }
+}
+
+// 2x1 centered
+@media only screen and (max-width: 1000px) and (max-height: 600px) {
+    // .DiscoverDailyMain {
+    //     background-image: linear-gradient(to top, $discoverDailyLight, $discoverDailyPercentage, $discoverDailyDark);
+    // }
+
+    .discoverDailyLeftColumn {
+        text-align: center;
+
+        button {
+            float: inherit;
+        }
+    }
+}
+
+.spotifySliderHeader {
+    margin: 4px 0 !important;
+}
+
+.spotifySliderDescription {
+    margin-top: 0px !important;
+    font-size: 1.5rem;
+}
+
+.spotifySlider.MuiSlider-root {
+    color: $spotifyGreen;
+    height: 6px;
+    padding: 13px 0;
+}
+
+.spotifySlider .MuiSlider-rail {
+    opacity: 0.5;
+    height: 6px;
+    border-radius: 6px;
+    color: #4fe383;
+}
+
+.spotifySlider .MuiSlider-track {
+    height: 6px;
+}
+
+.spotifySlider .MuiSlider-thumb {
+    height: 30px;
+    width: 30px;
+    background-color: white;
+    border: 1px solid $spotifyGreen;
+    margin-top: -13px;
+    margin-left: -14px;
+    font-family: 'Gotham';
+    font-size: 12px;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.playlistOptionList::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.playlistOptionList {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.MuiTypography-root, .MuiListItemText-root, .MuiTouchRipple-root {
+    width: max-content !important;
+    margin: 0;
+}
+
+.MuiTypography-root {
+    margin: 0 auto !important;
+    color: $textColor;
+    font-family: 'Gotham' !important
+}
+
+.MuiButtonBase-root.MuiListItem-root.MuiListItem-dense.MuiListItem-gutters.MuiListItem-button {
+    padding: 0 !important;
+    width: 33% !important;
+    margin: 1% 0 !important;
+    float: left;
+}
+
+.MuiList-padding {
+    padding: 0 !important;
+}
+
+.seedButton {
+    background-color: white;
+    border: 1px solid $spotifyGreen;
+    color: $spotifyGreen;
+    border-radius: 1000px;
+    line-height: 27px;
+    margin: 10% 0 !important;
+    outline: none !important;
+}
+
+.seedButton:disabled {
+    background-color: #333333;
+}
+
+.seedList {
+    width: 300px;
+    height: 55px;
+}
+
+.MuiCard-root {
+    background-color: #252525 !important;
+}
+
+.MuiCardHeader-subheader {
+    color: #bbb !important;
+}
+
+.MuiTypography-root.MuiCardHeader-subheader.MuiTypography-body1.MuiTypography-colorTextSecondary.MuiTypography-displayBlock {
+    margin: 0 0 0 2px !important;
+    font-size: 1.2rem;
+}
+
+@media only screen and (max-width: 1000px) {
+    .MuiButtonBase-root.MuiListItem-root.MuiListItem-dense.MuiListItem-gutters.MuiListItem-button {
+        width: 50% !important;
+    }
+
+    .makeStyles-paper-2, .MuiPaper-root.jss2.MuiPaper-elevation1.MuiPaper-rounded, .seedList {
+        width: 200px !important;
+        height: 75px !important;
+    }
+
+    #seedGrid {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+    .MuiButtonBase-root.MuiListItem-root.MuiListItem-dense.MuiListItem-gutters.MuiListItem-button {
+        width: 33.3% !important;
+    }
+
+    .makeStyles-paper-2, .MuiPaper-root.jss2.MuiPaper-elevation1.MuiPaper-rounded, .seedList {
+        width: 90% !important;
+        height: 55px !important;
+        display: inline-block;
+        margin: 0 !important;
+    }
+
+    #seedsLeft, #seedsRight{
+        width: 100% !important;
+        margin: 0 auto;
+    }
+
+    #seedsLeft {
+        padding-bottom: 0 !important;
+    }
+
+    #seedButtons {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        width: 100% !important;
+    }
+
+    #seedsRight {
+        padding-top: 0 !important;
+    }
+
+    #seedGrid {
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+    }
+
+    #seedButtons div {
+        display: inline-block !important;
+        width: 30% !important;
+    }
+
+    #seedButton2 {
+        float: left !important;
+    }
+
+    .seedButton {
+        margin: 2% 10% !important;
+    }
+}
+
+.setupAnimationDiv {
+    width: 80vw;
+    margin: 0;
+    display: inline-table;
+    border-radius: 10px;
+    padding: 30px 40px;
+    background-color: #282828;
+}
+
+.setupAnimationClass {
+    transition: left 0.4s ease;
+    animation-delay: 0.1s;
+    position: absolute;
+}
+
+.setupPageArrowButton {
+    border-radius: 500px;
+    color: white;
+    background-color: $spotifyGreen;
+    border: 0;
+    display: flex;
+    width: 50px;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    transition: transform 33ms cubic-bezier(.3,0,0,1),-webkit-transform 33ms cubic-bezier(.3,0,0,1);
+    margin: 52vh auto 0 auto !important;
+    text-decoration: none;
+    outline: none !important;
+    z-index: 2;
+}
+
+.setupPageArrowButton:hover {
+    transform: scale(1.06);
+}
+
+.setupPageSideColumn {
+    width: 10%;
+    height: 100%;
+    margin: 0;
+    float: left;
+    display: flex;
+}
+
+.MuiSlider-thumb.MuiSlider-thumbColorPrimary {
+    pointer-events: none;
+}
+
+.setupMainColumn {
+    width: 80%;
+    height: 100%;
+    margin: 0;
+    float: left;
+    display: flex;
+}
+
+.setupMainRow {
+    position: relative;
+    width: 100%;
+    margin: auto 0;
+    height: 450px;
+}
+
+#signupButton {
+    left: 100vw;
+    top: 400px;
+}
+
+// Setup flow buttons on top and bottom
+@media only screen and (max-width: 900px) {
+    .setupPageSideColumn {
+        width: 100vw;
+        height: 15%;
+    }
+
+    .setupPageArrowButton {
+        margin: auto !important;
+    }
+
+    .setupMainColumn {
+        height: 70%;
+        width: 90%;
+        margin-left: 5%;
+    }
+
+    .setupAnimationDiv {
+        width: 100%;
+    }
+
+    #setupHeader {
+        h1 {
+            font-size: 4rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+        }
+    }
+
+    .setupAnimationDiv h3 {
+        font-size: 1.5rem;
+    }
+
+    .setupMainRow {
+        height: 70%;
+        margin: 0;
+    }
+
+    #signupButton {
+        margin-top: 15%;
+    }
+}

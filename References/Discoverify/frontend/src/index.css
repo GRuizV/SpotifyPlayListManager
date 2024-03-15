@@ -1,0 +1,18 @@
+@font-face {
+  font-family: 'Gotham';
+  src: local('Gotham'), url(./fonts/Gotham.woff2) format('woff2'), url(./fonts/Gotham.woff) format('woff'), url(./fonts/Gotham.ttf) format('truetype');
+}
+
+body {
+  margin: 0;
+  font-family: 'Gotham', sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: 'Gotham', sans-serif, source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

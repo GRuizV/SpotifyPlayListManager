@@ -1,0 +1,26 @@
+{
+    "name": "discoverify-backend",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "nodemon app.js",
+        "startCron": "nodemon cronService.js",
+        "deploy": "git pull && yarn install --ignore-engines && pm2 reload discoverify-backend --update-env && pm2 reload discoverify-cronService --update-env",
+        "logs-backend": "pm2 logs discoverify-backend --lines 500",
+        "logs-cron": "pm2 logs discoverify-cronService --lines 500"
+    },
+    "dependencies": {
+        "body-parser": "^1.20.2",
+        "cron": "^1.8.2",
+        "crypto-js": "^4.0.0",
+        "dotenv": "^8.2.0",
+        "express": "^4.18.2",
+        "fs": "0.0.1-security",
+        "mongoose": "^5.13.20",
+        "node-fetch": "^2.6.12",
+        "stripe": "^12.13.0",
+        "yarn": "^1.22.19"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.6"
+    }
+}
