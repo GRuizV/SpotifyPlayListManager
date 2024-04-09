@@ -40,6 +40,7 @@ MAIN CLASS
 
 class SpotifyHelper:
 
+
     @staticmethod
     async def get_new_access_token(refresh_token: str) -> str:
 
@@ -57,3 +58,26 @@ class SpotifyHelper:
             raise SpotifyAPIException(True)
 
         return result_json['access_token']
+    
+
+
+
+
+    @staticmethod
+    async def get_refresh_token(code: str, redirect_uri: str) -> str:
+        
+        details = {
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': redirect_uri,
+            'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET
+        }
+
+        result = requests.post('https://accounts.spotify.com/api/token', data=details)
+        result_json = result.json()
+
+        if 'error' in result_json and result_json['error'] == 'invalid_grant':
+            raise SpotifyAPIException(True)
+
+        return result_json['refresh_token']

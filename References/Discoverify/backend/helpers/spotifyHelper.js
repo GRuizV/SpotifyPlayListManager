@@ -78,11 +78,17 @@ class SpotifyHelper {
     return resultJSON.access_token;
   }
 
+  // FUNCTION REVIEWED
 
 
 
 
-
+  /*
+  This function is similar to the last one, and they differ in the moment is used.
+  This one, is used once, when initially the user authorize the app for making the requests
+  and the the before this is used periodically, since the tokens expires within a time period,
+  so to avoid keep asking the user for re-authorization, the function above gets a new one. 
+  */
   static async getRefreshToken(code, redirectUri) {
 
     const details = {
@@ -114,7 +120,7 @@ class SpotifyHelper {
     return response.json();
   }
 
-
+  // FUNCTION REVIEWED
 
 
 
