@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 
 
-
+// CONSTANTS AND ENVIRONMENT VARIABLES SETTING
 require('dotenv').config();
 const fetch = require('node-fetch');
 const fs = require('fs');
@@ -29,11 +29,14 @@ function SpotifyAPIException(deleteUser) {
 
 
 
-
+// MAIN CLASS
 class SpotifyHelper {
 
 
-  
+  /* 
+  This function validates, with a refreshed token the communication with the Spotify server
+  to make authenticated requests on behalf of the user.  
+  */
   static async getNewAccessToken(refreshToken) {
 
     const details = {
@@ -42,6 +45,8 @@ class SpotifyHelper {
       client_id: CLIENT_ID,
       client_secret: CLIENT_SECRET,
     };
+
+
 
     let formBody = [];
     // eslint-disable-next-line guard-for-in
@@ -52,6 +57,8 @@ class SpotifyHelper {
     }
     formBody = formBody.join('&');
 
+
+
     const result = await fetch(`https://accounts.spotify.com/api/token`, {
       method: 'POST',
       headers: {
@@ -59,6 +66,8 @@ class SpotifyHelper {
       },
       body: formBody,
     });
+
+
 
     const resultJSON = await result.json();
 
