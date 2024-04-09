@@ -1,4 +1,7 @@
 /* eslint-disable no-restricted-syntax */
+
+
+
 require('dotenv').config();
 const fetch = require('node-fetch');
 const fs = require('fs');
@@ -17,8 +20,22 @@ function SpotifyAPIException(deleteUser) {
   this.deleteUser = deleteUser;
 }
 
+
+
+
+
+
+
+
+
+
+
 class SpotifyHelper {
+
+
+  
   static async getNewAccessToken(refreshToken) {
+
     const details = {
       grant_type: 'refresh_token',
       refresh_token: refreshToken,
@@ -52,7 +69,13 @@ class SpotifyHelper {
     return resultJSON.access_token;
   }
 
+
+
+
+
+
   static async getRefreshToken(code, redirectUri) {
+
     const details = {
       grant_type: 'authorization_code',
       code,
@@ -81,6 +104,11 @@ class SpotifyHelper {
 
     return response.json();
   }
+
+
+
+
+
 
   static async getTop(type, range, accessToken) {
     try {
@@ -116,6 +144,13 @@ class SpotifyHelper {
     }
   }
 
+
+
+
+
+
+
+
   // eslint-disable-next-line camelcase
   static async getAllTop(playlistOptions, access_token) {
     const allTimeArtists = playlistOptions.seeds.includes('AA')
@@ -145,6 +180,13 @@ class SpotifyHelper {
       shortTerm: { artists: shortTermArtists, tracks: shortTermTracks },
     };
   }
+
+
+
+
+
+
+
 
   static getSeeds(playlistOptions, top) {
     const artists = [];
@@ -214,6 +256,13 @@ class SpotifyHelper {
     return { artists, tracks };
   }
 
+
+
+
+
+
+
+
   static async getLiked(trackIds, accessToken) {
     const result = await fetch(
       `https://api.spotify.com/v1/me/tracks/contains?ids=${trackIds.join(',')}`,
@@ -228,6 +277,13 @@ class SpotifyHelper {
 
     return result.json();
   }
+
+
+
+
+
+
+
 
   static getRecommendationUrls(user, seeds) {
     let baseUrl = 'https://api.spotify.com/v1/recommendations?limit=50';
@@ -288,6 +344,11 @@ class SpotifyHelper {
 
     return { minMaxUrl, targetUrl };
   }
+
+
+
+
+
 
   static async getTracks(user, userId, tracksInPlaylist, seeds, accessToken) {
     const PLAYLIST_SIZE = 30;
@@ -414,6 +475,14 @@ class SpotifyHelper {
     return Array.from(playlistUris);
   }
 
+
+
+
+
+
+
+
+
   static async updatePlaylistTracks(playlistId, tracks, accessToken) {
     await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
       method: 'PUT',
@@ -426,6 +495,12 @@ class SpotifyHelper {
       }),
     });
   }
+
+
+
+
+
+
 
   static async getPlaylist(userId, playlistId, accessToken) {
     if (!playlistId) return null;
@@ -467,6 +542,15 @@ class SpotifyHelper {
     }
   }
 
+
+
+
+
+
+
+
+
+
   static async createPlaylist(user, userId, accessToken) {
     const response = await fetch(
       `https://api.spotify.com/v1/users/${userId}/playlists`,
@@ -491,6 +575,13 @@ class SpotifyHelper {
     return responseJSON;
   }
 
+
+
+
+
+
+
+
   static async getMe(accessToken) {
     const response = await fetch('https://api.spotify.com/v1/me', {
       Accepts: 'application/json',
@@ -502,6 +593,14 @@ class SpotifyHelper {
 
     return response.json();
   }
+
+
+
+
+
+
+
+
 
   static async getUserPlaylists(accessToken) {
     const response = await fetch(
@@ -518,6 +617,12 @@ class SpotifyHelper {
     return response.json();
   }
 
+
+
+
+
+
+
   static async getGenericFetch(uri, accessToken) {
     const response = await fetch(uri, {
       Accepts: 'application/json',
@@ -529,6 +634,14 @@ class SpotifyHelper {
 
     return response.json();
   }
+
+
+
+
+
+
+
+
 
   static async doesMyPlaylistExists(playlistId, accessToken) {
     let playlists = await this.getUserPlaylists(accessToken);
@@ -555,6 +668,11 @@ class SpotifyHelper {
     return false;
   }
 
+
+
+
+
+
   static async addPlaylistCover(playlistId, encodedImage, accessToken) {
     await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/images`, {
       method: 'PUT',
@@ -565,6 +683,12 @@ class SpotifyHelper {
       body: fs.createReadStream(encodedImage),
     });
   }
+
+
+
+
+
+
 
   static async updatePlaylist(user, playlistCover) {
     console.log(`Starting job for user: ${user.userId}`);
@@ -635,6 +759,13 @@ class SpotifyHelper {
     console.log(' ');
   }
 
+
+
+
+
+
+
+
   static async updatePlaylists(users) {
     console.log(`running ${users.length} jobs | ${new Date()}`);
     // const playlistCover = 'images/playlistCover.jpeg';
@@ -664,6 +795,13 @@ class SpotifyHelper {
 
     console.log(`${users.length} jobs complete | ${new Date()}`);
   }
+
+
+
+
+
+
+
 
   static async updatePlaylistsNoUpdate() {
     const users = await UserController.getAllUsers();
@@ -727,6 +865,13 @@ class SpotifyHelper {
 
     console.log(`${users.length} jobs complete | ${new Date()}`);
   }
+
+
 }
+
+
+
+
+
 
 module.exports = SpotifyHelper;
