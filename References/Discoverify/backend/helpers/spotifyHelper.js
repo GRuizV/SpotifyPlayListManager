@@ -125,7 +125,12 @@ class SpotifyHelper {
 
 
 
+
+  /*
+  This function fetches the top 20 tracks (or artists) from the user sessions, and handles errors
+  */
   static async getTop(type, range, accessToken) {
+
     try {
       const result = await fetch(
         `https://api.spotify.com/v1/me/top/${type}?limit=20&time_range=${range}`,
@@ -141,6 +146,7 @@ class SpotifyHelper {
       const resultJSON = await result.json();
 
       return resultJSON.items.map((x) => x.id);
+
     } catch (e) {
       const result = await fetch(
         `https://api.spotify.com/v1/me/top/${type}?limit=20&time_range=${range}`,
@@ -159,35 +165,47 @@ class SpotifyHelper {
     }
   }
 
+  // FUNCTION REVIEWED
 
 
 
 
 
 
-
+  /*
+  This function collect for different time ranges (All time, medium term and short term) listener habits,
+  both in tracks and artists
+  */
   // eslint-disable-next-line camelcase
   static async getAllTop(playlistOptions, access_token) {
+
     const allTimeArtists = playlistOptions.seeds.includes('AA')
       ? await this.getTop('artists', 'long_term', access_token)
       : null;
+
     const allTimeTracks = playlistOptions.seeds.includes('AT')
       ? await this.getTop('tracks', 'long_term', access_token)
       : null;
 
+      
     const mediumTermArtists = playlistOptions.seeds.includes('MA')
       ? await this.getTop('artists', 'medium_term', access_token)
       : null;
+
     const mediumTermTracks = playlistOptions.seeds.includes('MT')
       ? await this.getTop('tracks', 'medium_term', access_token)
       : null;
 
+
     const shortTermArtists = playlistOptions.seeds.includes('SA')
       ? await this.getTop('artists', 'short_term', access_token)
       : null;
+
     const shortTermTracks = playlistOptions.seeds.includes('ST')
       ? await this.getTop('tracks', 'short_term', access_token)
       : null;
+
+
 
     return {
       allTime: { artists: allTimeArtists, tracks: allTimeTracks },
@@ -196,27 +214,38 @@ class SpotifyHelper {
     };
   }
 
+  // FUNCTION REVIEWED
 
 
 
 
 
 
-
+  /*
+  From a parameter (playlistOptions) passed, the function will pick randomly tracks and artists
+  presumably as seed to generate later the final playlist.
+  */
   static getSeeds(playlistOptions, top) {
+
     const artists = [];
     const tracks = [];
 
     for (let i = 0; i < playlistOptions.seeds.length; i += 1) {
+
       switch (playlistOptions.seeds[i]) {
+
         case 'AT':
+
           if (top.allTime.tracks.length > 0) {
             const index = Math.floor(Math.random() * top.allTime.tracks.length);
             tracks.push(top.allTime.tracks[index]);
             top.allTime.tracks.splice(index, 1);
           }
           break;
+
+
         case 'MT':
+
           if (top.mediumTerm.tracks.length > 0) {
             const index = Math.floor(
               Math.random() * top.mediumTerm.tracks.length
@@ -225,7 +254,10 @@ class SpotifyHelper {
             top.mediumTerm.tracks.splice(index, 1);
           }
           break;
+
+
         case 'ST':
+
           if (top.shortTerm.tracks.length > 0) {
             const index = Math.floor(
               Math.random() * top.shortTerm.tracks.length
@@ -234,7 +266,10 @@ class SpotifyHelper {
             top.shortTerm.tracks.splice(index, 1);
           }
           break;
+
+
         case 'AA':
+
           if (top.allTime.artists.length > 0) {
             const index = Math.floor(
               Math.random() * top.allTime.artists.length
@@ -243,7 +278,10 @@ class SpotifyHelper {
             top.allTime.artists.splice(index, 1);
           }
           break;
+
+
         case 'MA':
+
           if (top.mediumTerm.artists.length > 0) {
             const index = Math.floor(
               Math.random() * top.mediumTerm.artists.length
@@ -252,7 +290,10 @@ class SpotifyHelper {
             top.mediumTerm.artists.splice(index, 1);
           }
           break;
+
+
         case 'SA':
+
           if (top.shortTerm.artists.length > 0) {
             const index = Math.floor(
               Math.random() * top.shortTerm.artists.length
@@ -261,7 +302,10 @@ class SpotifyHelper {
             top.shortTerm.artists.splice(index, 1);
           }
           break;
+
+
         default:
+
           throw new Error(
             `Unexpected seed value found: ${playlistOptions.seeds[i]}`
           );
@@ -270,6 +314,8 @@ class SpotifyHelper {
 
     return { artists, tracks };
   }
+
+  // FUNCTION REVIEWED
 
 
 
