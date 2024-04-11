@@ -63,7 +63,6 @@ class SpotifyHelper:
 
 
 
-
     @staticmethod
     async def get_refresh_token(code: str, redirect_uri: str) -> str:
 
@@ -121,6 +120,7 @@ class SpotifyHelper:
         
     
 
+
     @staticmethod
     def get_seeds(playlist_options, top):
 
@@ -163,3 +163,59 @@ class SpotifyHelper:
                 raise ValueError(f"Unexpected seed value found: {seed}")
 
         return {'artists': artists, 'tracks': tracks}
+    
+
+
+    @staticmethod
+    async def get_liked(track_ids, access_token):
+
+        response = requests.get(
+            f"https://api.spotify.com/v1/me/tracks/contains?ids={','.join(track_ids)}",
+            headers={"Authorization": f"Bearer {access_token}"}
+        )
+        return response.json()
+    
+
+
+
+    @staticmethod
+    async def get_recommendation_urls(user, seeds):
+
+        base_url = 'https://api.spotify.com/v1/recommendations?limit=50'
+
+        if seeds['artists']:
+            base_url += f'&seed_artists={",".join(seeds["artists"])}'
+
+        if seeds['tracks']:
+            base_url += f'&seed_tracks={",".join(seeds["tracks"])}'
+
+        min_max_url = base_url + f'&min_acousticness={user["playlistOptions"]["acousticness"][0]/100}&max_acousticness={user["playlistOptions"]["acousticness"][1]/100}'
+        min_max_url += f'&min_danceability={user["playlistOptions"]["danceability"][0]/100}&max_danceability={user["playlistOptions"]["danceability"][1]/100}'
+        min_max_url += f'&min_energy={user["playlistOptions"]["energy"][0]/100}&max_energy={user["playlistOptions"]["energy"][1]/100}'
+        min_max_url += f'&min_instrumentalness={user["playlistOptions"]["instrumentalness"][0]/100}&max_instrumentalness={user["playlistOptions"]["instrumentalness"][1]/100}'
+        min_max_url += f'&min_popularity={user["playlistOptions"]["popularity"][0]}&max_popularity={user["playlistOptions"]["popularity"][1]}'
+        min_max_url += f'&min_valence={user["playlistOptions"]["valence"][0]/100}&max_valence={user["playlistOptions"]["valence"][1]/100}'
+
+        target_url = base_url + f'&target_acousticness={(user["playlistOptions"]["acousticness"][0]+user["playlistOptions"]["acousticness"][1])/200}'
+        target_url += f'&target_danceability={(user["playlistOptions"]["danceability"][0]+user["playlistOptions"]["danceability"][1])/200}'
+        target_url += f'&target_energy={(user["playlistOptions"]["energy"][0]+user["playlistOptions"]["energy"][1])/200}'
+        target_url += f'&target_instrumentalness={(user["playlistOptions"]["instrumentalness"][0]+user["playlistOptions"]["instrumentalness"][1])/200}'
+        target_url += f'&target_popularity={round((user["playlistOptions"]["popularity"][0]+user["playlistOptions"]["popularity"][1])/2)}'
+        target_url += f'&target_valence={(user["playlistOptions"]["valence"][0]+user["playlistOptions"]["valence"][1])/200}'
+
+        return {'minMaxUrl': min_max_url, 'targetUrl': target_url}
+    
+    
+
+
+    '-'
+
+
+
+
+
+
+
+
+
+

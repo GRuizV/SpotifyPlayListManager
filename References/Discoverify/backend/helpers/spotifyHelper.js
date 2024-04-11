@@ -323,7 +323,10 @@ class SpotifyHelper {
 
 
 
-
+ /*
+  This function makes a request to spotify for checking if the tracks passed are within the
+  users liked tracks.
+  */
   static async getLiked(trackIds, accessToken) {
     const result = await fetch(
       `https://api.spotify.com/v1/me/tracks/contains?ids=${trackIds.join(',')}`,
@@ -338,15 +341,25 @@ class SpotifyHelper {
 
     return result.json();
   }
+ // FUNCTION REVIEWED
 
 
 
 
 
 
-
-
+ /*
+  What this function does is:
+  1. It constructs a base URL for Spotify API recommendations with a limit of 50.
+  2. It appends seed_artists and seed_tracks to the URL if they are provided in the seeds parameter.
+  3. It constructs two URLs: minMaxUrl and targetUrl, based on the user's playlistOptions.
+    - minMaxUrl includes the minimum and maximum values for each parameter (acousticness, danceability, energy, etc.).
+    - targetUrl calculates the target value as the average of the minimum and maximum values for each parameter.
+  4. It returns a dictionary containing minMaxUrl and targetUrl.
+  */
   static getRecommendationUrls(user, seeds) {
+
+
     let baseUrl = 'https://api.spotify.com/v1/recommendations?limit=50';
 
     if (seeds.artists.length > 0) {
@@ -357,7 +370,9 @@ class SpotifyHelper {
       baseUrl += `&seed_tracks=${seeds.tracks.join(',')}`;
     }
 
+
     let minMaxUrl = baseUrl;
+
     minMaxUrl += `&min_acousticness=${
       user.playlistOptions.acousticness[0] / 100
     }&max_acousticness=${user.playlistOptions.acousticness[1] / 100}`;
@@ -375,7 +390,11 @@ class SpotifyHelper {
       user.playlistOptions.valence[0] / 100
     }&max_valence=${user.playlistOptions.valence[1] / 100}`;
 
+
+
+
     let targetUrl = baseUrl;
+
     targetUrl += `&target_acousticness=${
       (user.playlistOptions.acousticness[0] +
         user.playlistOptions.acousticness[1]) /
@@ -405,12 +424,16 @@ class SpotifyHelper {
 
     return { minMaxUrl, targetUrl };
   }
+ // FUNCTION REVIEWED
 
 
 
 
 
 
+ /*
+  What this function does is:
+  */
   static async getTracks(user, userId, tracksInPlaylist, seeds, accessToken) {
     const PLAYLIST_SIZE = 30;
     let usr = user;
