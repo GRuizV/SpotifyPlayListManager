@@ -208,7 +208,226 @@ class SpotifyHelper:
     
 
 
-    '-'
+    @staticmethod
+    async def get_tracks(user, user_id, tracks_in_playlist, seeds, access_token):
+        PLAYLIST_SIZE = 30
+        usr = user
+
+        # if not user.get('playlistOptions'):
+            # usr = await UserController.restore_playlist_options(user_id)
+
+        min_max_url, target_url = SpotifyHelper.get_recommendation_urls(usr, seeds)
+
+        recommendations = await requests.fetch(min_max_url, {
+            'Accepts': 'application/json',
+            'method': 'GET',
+            'headers': {
+                'Authorization': f'Bearer {access_token}'
+            }
+        })
+
+        response_json = await recommendations.json()
+
+        tracks = response_json.get('tracks', [])
+
+        track_ids = []
+        uris = []
+
+        for track in tracks:
+            track_ids.append(track['id'])
+            uris.append(track['uri'])
+
+
+        liked_tracks = set()
+        already_in_playlist = set()
+        playlist_uris = set()
+
+
+        for i, liked in enumerate(await SpotifyHelper.get_liked(track_ids, access_token)):
+
+            if not liked:
+                playlist_uris.add(uris[i])
+
+            else:
+                liked_tracks.add(uris[i])
+
+            if track_ids[i] in tracks_in_playlist:
+                already_in_playlist.add(uris[i])
+
+            if len(playlist_uris) >= PLAYLIST_SIZE:
+                break
+
+
+        if len(playlist_uris) < PLAYLIST_SIZE:
+
+            target_recommendations = await requests.fetch(target_url, {
+                'Accepts': 'application/json',
+                'method': 'GET',
+                'headers': {
+                    'Authorization': f'Bearer {access_token}'
+                }
+            })
+
+            target_response_json = await target_recommendations.json()
+            target_tracks = target_response_json.get('tracks', [])
+
+
+            if not target_tracks:
+                return []
+            
+
+            target_track_ids = []
+            target_uris = []
+
+
+            for target_track in target_tracks:
+                target_track_ids.append(target_track['id'])
+                target_uris.append(target_track['uri'])
+
+
+            for i, target_liked in enumerate(await SpotifyHelper.get_liked(target_track_ids, access_token)):
+
+                if not target_liked:
+                    playlist_uris.add(target_uris[i])
+
+                else:
+                    liked_tracks.add(target_uris[i])
+
+                if target_track_ids[i] in tracks_in_playlist:
+                    already_in_playlist.add(target_uris[i])
+
+                if len(playlist_uris) >= PLAYLIST_SIZE:
+                    break
+
+
+        for track in already_in_playlist:
+
+            if len(playlist_uris) >= PLAYLIST_SIZE:
+                break
+
+            if track not in liked_tracks:
+                playlist_uris.add(track)
+
+
+        for track in liked_tracks:
+
+            if len(playlist_uris) >= PLAYLIST_SIZE:
+                break
+
+            playlist_uris.add(track)
+
+
+        return list(playlist_uris)
+    
+
+
+
+    @staticmethod
+    async def update_playlist_tracks(playlist_id, uris, access_token):
+
+        url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+
+        data = {
+            'uris': uris
+        }
+
+        response = requests.post(url, headers=headers, json=data)
+        response.raise_for_status()
+
+        return response.json()
+    
+
+
+
+    @staticmethod
+    async def get_playlist(user_id, playlist_id, access_token):
+
+        if not playlist_id:
+            return None
+
+        url = f'https://api.spotify.com/v1/playlists/{playlist_id}'
+        headers = {'Authorization': f'Bearer {access_token}'}
+
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            result_json = response.json()
+
+            return result_json if result_json['owner']['id'] == user_id else None
+
+        except requests.exceptions.RequestException as e:
+            print(result_json)
+            print(e)
+
+            response = requests.get(url, headers=headers)
+            result_json = response.json()
+
+            return result_json if result_json['owner']['id'] == user_id else None
+    
+
+
+
+    @staticmethod
+    async def create_playlist(user, user_id, access_token):
+        url = f'https://api.spotify.com/v1/users/{user_id}/playlists'
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {access_token}'
+        }
+        data = {
+            'name': 'Discover Daily',
+            'public': False,
+            'description': "If you would like to support Discoverify, consider visiting patreon.com/discoverify (COMPLETELY OPTIONAL). Daily music, curated for you based on your listening history. If you don't want to get this daily playlist anymore, you can unsubscribe at https://discoverifymusic.com"
+        }
+
+        try:
+            response = requests.post(url, headers=headers, data=json.dumps(data))
+            response.raise_for_status()
+            response_json = response.json()
+
+            user.playlist_id = response_json['id']
+
+            return response_json
+
+        except requests.exceptions.RequestException as e:
+            print(e)
+            return None
+
+
+    @staticmethod
+    def get_me(accessToken):
+        
+        response = requests.get('https://api.spotify.com/v1/me', headers={'Authorization': f'Bearer {accessToken}'})
+        return response.json()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

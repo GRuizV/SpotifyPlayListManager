@@ -433,8 +433,22 @@ class SpotifyHelper {
 
  /*
   What this function does is:
+
+  1. Initialization: It initializes constants and variables, including the playlist size and the usr variable, which is either the provided user or, if user.playlistOptions is falsy, 
+  it fetches the playlist options from the database using UserController.restorePlaylistOptions(userId).
+  2. Building Recommendation URLs: It calls the getRecommendationUrls function to construct two URLs for fetching recommendations based on the user's preferences and seeds.
+  3. Fetching Recommendations: It fetches recommendations from Spotify using fetch(minMaxUrl, ...) and handles the response, including a retry mechanism in case of an error.
+  4. Processing Recommendations: It extracts track IDs and URIs from the recommendation response and filters out tracks that are already liked or in the user's playlist.
+  5. Fetching Additional Recommendations: If the number of tracks for the playlist is still below the desired size, it fetches additional recommendations using the targetUrl.
+  6. Finalizing Playlist: It combines the tracks from the initial and additional recommendations, ensuring that the playlist size does not exceed the limit and that liked tracks 
+  and tracks already in the playlist are included appropriately.
+  7. Returning Playlist: It returns an array of URIs for the tracks to be added to the playlist.
+  
+  This function essentially generates a playlist of tracks based on the user's preferences and Spotify's recommendations, 
+  ensuring that the playlist contains diverse and appealing tracks while avoiding duplicates and tracks the user has already liked or added to their playlist.
   */
   static async getTracks(user, userId, tracksInPlaylist, seeds, accessToken) {
+
     const PLAYLIST_SIZE = 30;
     let usr = user;
 
@@ -451,6 +465,7 @@ class SpotifyHelper {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+
 
     let responseJSON;
     try {
@@ -473,14 +488,19 @@ class SpotifyHelper {
       responseJSON = await recommendations.json();
     }
 
+
     const tracks = responseJSON.tracks || [];
+
 
     const trackIds = [];
     const uris = [];
+
     for (let i = 0; i < tracks.length; i += 1) {
       trackIds.push(tracks[i].id);
       uris.push(tracks[i].uri);
     }
+
+
 
     const liked =
       tracks.length === 0 ? [] : await this.getLiked(trackIds, accessToken);
@@ -488,7 +508,10 @@ class SpotifyHelper {
     const likedTracks = new Set();
     const alreadyInPlaylist = new Set();
     const playlistUris = new Set();
+
+
     for (let i = 0; i < liked.length; i += 1) {
+
       if (!liked[i]) {
         playlistUris.add(uris[i]);
       } else {
@@ -502,7 +525,9 @@ class SpotifyHelper {
       if (playlistUris.size >= PLAYLIST_SIZE) break;
     }
 
+
     if (playlistUris.size < PLAYLIST_SIZE) {
+
       const targetRecommendations = await fetch(targetUrl, {
         Accepts: 'application/json',
         method: 'GET',
@@ -520,14 +545,19 @@ class SpotifyHelper {
 
       const targetTrackIds = [];
       const targetUris = [];
+
+
       for (let i = 0; i < targetTracks.length; i += 1) {
         targetTrackIds.push(targetTracks[i].id);
         targetUris.push(targetTracks[i].uri);
       }
 
+
+
       const targetLiked = await this.getLiked(targetTrackIds, accessToken);
 
       for (let i = 0; i < targetLiked.length; i += 1) {
+
         if (!targetLiked[i]) {
           playlistUris.add(targetUris[i]);
         } else {
@@ -542,6 +572,8 @@ class SpotifyHelper {
       }
     }
 
+
+
     for (const track of alreadyInPlaylist) {
       if (playlistUris.size >= PLAYLIST_SIZE) break;
 
@@ -549,6 +581,7 @@ class SpotifyHelper {
         playlistUris.add(track);
       }
     }
+
 
     for (const track of likedTracks) {
       if (playlistUris.size >= PLAYLIST_SIZE) break;
@@ -558,6 +591,7 @@ class SpotifyHelper {
 
     return Array.from(playlistUris);
   }
+  //FUNCTION REVIEWED
 
 
 
@@ -565,9 +599,12 @@ class SpotifyHelper {
 
 
 
-
-
+  /*
+  What this function does is literally update the playlist with the tracks passed 
+  and prompts the HTTP response
+  */
   static async updatePlaylistTracks(playlistId, tracks, accessToken) {
+
     await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
       method: 'PUT',
       headers: {
@@ -579,18 +616,26 @@ class SpotifyHelper {
       }),
     });
   }
+  // FUNCTION REVIEWED
 
 
 
 
 
-
-
+  /*
+  What this function does is retrieve a playlist from the Spotify API using its ID. 
+  It then checks if the owner of the playlist is the same as the provided user ID. 
+  If they match, it returns the playlist JSON object; otherwise, it returns null. 
+  The function also handles any errors that may occur during the API request, logging the error and returning null.
+  */
   static async getPlaylist(userId, playlistId, accessToken) {
+
     if (!playlistId) return null;
 
     let resultJSON;
+
     try {
+
       const result = await fetch(
         `https://api.spotify.com/v1/playlists/${playlistId}`,
         {
@@ -605,9 +650,11 @@ class SpotifyHelper {
       resultJSON = await result.json();
 
       return resultJSON.owner.id === userId ? resultJSON : null;
+
     } catch (e) {
       console.log(resultJSON);
       console.log(e);
+
 
       const result = await fetch(
         `https://api.spotify.com/v1/playlists/${playlistId}`,
@@ -625,6 +672,7 @@ class SpotifyHelper {
       return resultJSON.owner.id === userId ? resultJSON : null;
     }
   }
+  // FUNCTION REVIEWED
 
 
 
@@ -633,9 +681,11 @@ class SpotifyHelper {
 
 
 
-
-
+  /*
+  What this function does is create straighforward the 'Discoverify' playlist
+  */
   static async createPlaylist(user, userId, accessToken) {
+
     const response = await fetch(
       `https://api.spotify.com/v1/users/${userId}/playlists`,
       {
@@ -658,14 +708,16 @@ class SpotifyHelper {
 
     return responseJSON;
   }
+  // FUNCTION REVIEWED
 
 
 
 
 
 
-
-
+  /*
+  What this function does is to retrive the data from the user autheticated in the app
+  */
   static async getMe(accessToken) {
     const response = await fetch('https://api.spotify.com/v1/me', {
       Accepts: 'application/json',
@@ -677,6 +729,7 @@ class SpotifyHelper {
 
     return response.json();
   }
+ // FUNCTION REVIEWED
 
 
 
@@ -684,8 +737,9 @@ class SpotifyHelper {
 
 
 
-
-
+  /*
+  What this function does is to retrive the data from the user autheticated in the app
+  */
   static async getUserPlaylists(accessToken) {
     const response = await fetch(
       'https://api.spotify.com/v1/me/playlists?limit=50',
@@ -700,7 +754,7 @@ class SpotifyHelper {
 
     return response.json();
   }
-
+ // FUNCTION REVIEWED
 
 
 
