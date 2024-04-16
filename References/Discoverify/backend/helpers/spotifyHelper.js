@@ -23,12 +23,6 @@ function SpotifyAPIException(deleteUser) {
 
 
 
-
-
-
-
-
-
 // MAIN CLASS
 class SpotifyHelper {
 
@@ -738,7 +732,7 @@ class SpotifyHelper {
 
 
   /*
-  What this function does is to retrive the data from the user autheticated in the app
+  What this function does is to retrive the user's playlists up to 50 of them.
   */
   static async getUserPlaylists(accessToken) {
     const response = await fetch(
@@ -760,7 +754,9 @@ class SpotifyHelper {
 
 
 
-
+ /*
+  This function appears to simplify others, so it only sets the headers for requesting something to the spotify endpoints.
+  */
   static async getGenericFetch(uri, accessToken) {
     const response = await fetch(uri, {
       Accepts: 'application/json',
@@ -772,6 +768,7 @@ class SpotifyHelper {
 
     return response.json();
   }
+ // FUNCTION REVIEWED
 
 
 
@@ -780,8 +777,11 @@ class SpotifyHelper {
 
 
 
-
+  /*
+  This function validates against the user playlist if a specific playlist exist with a playlist ID
+  */
   static async doesMyPlaylistExists(playlistId, accessToken) {
+
     let playlists = await this.getUserPlaylists(accessToken);
 
     if (!playlists || !playlists.items) {
@@ -805,13 +805,16 @@ class SpotifyHelper {
 
     return false;
   }
+ // FUNCTION REVIEWED
 
 
 
 
-
-
+  /*
+  This function updates the cover of the playlist
+  */
   static async addPlaylistCover(playlistId, encodedImage, accessToken) {
+
     await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/images`, {
       method: 'PUT',
       headers: {
@@ -821,14 +824,30 @@ class SpotifyHelper {
       body: fs.createReadStream(encodedImage),
     });
   }
+  // FUNCTION REVIEWED
 
 
 
 
 
-
-
+  '******* CORE FUNCTION *******'
+  /*
+  This function does this:
+    
+    1. Decrypts the user's userId using AES decryption.
+    2. Retrieves a new access token using the user's refreshToken.
+    3. Retrieves the seed options for the playlist based on the user's playlist options and their Spotify listening history.
+    4. Checks if the user's playlist already exists and if the Spotify playlist with the given playlistId exists.
+    5. If the user's playlist or the Spotify playlist does not exist, it creates a new playlist for the user.
+    6. Retrieves the existing tracks in the playlist to avoid adding duplicates.
+    7. Gets new tracks based on the user's playlist options and listening history.
+    8. Updates the playlist with the new tracks.
+    9. Updates the user's lastUpdated field and saves the user object.
+    10. Optionally, adds a new playlist cover image if playlistCover is provided.
+    11. Handles errors, such as deleting the user if necessary.
+  */
   static async updatePlaylist(user, playlistCover) {
+
     console.log(`Starting job for user: ${user.userId}`);
 
     const userId = CryptoJS.AES.decrypt(
@@ -896,6 +915,7 @@ class SpotifyHelper {
 
     console.log(' ');
   }
+ // FUNCTION REVIEWED
 
 
 
@@ -903,17 +923,23 @@ class SpotifyHelper {
 
 
 
-
+  /*
+  This function does the Discovery playlist update for a number of users
+  */
   static async updatePlaylists(users) {
+
     console.log(`running ${users.length} jobs | ${new Date()}`);
     // const playlistCover = 'images/playlistCover.jpeg';
     // await Promise.all(users.map(user => this.updatePlaylist(user, null)));
 
     const failures = [];
+
     for (let i = 0; i < users.length; i += 1) {
+
       try {
         console.log(`${i + 1}/${users.length}`);
         await this.updatePlaylist(users[i], null);
+
       } catch (e) {
         console.log(e);
         failures.push(users[i]);
@@ -922,6 +948,7 @@ class SpotifyHelper {
 
     console.log();
     console.log(`running ${failures.length} failure jobs | ${new Date()}`);
+
     for (let i = 0; i < failures.length; i += 1) {
       try {
         console.log(`${i + 1}/${failures.length}`);
@@ -933,16 +960,21 @@ class SpotifyHelper {
 
     console.log(`${users.length} jobs complete | ${new Date()}`);
   }
+ // FUNCTION REVIEWED
 
 
 
 
 
 
-
-
+  /*
+  This function runs the same process of the updatePlaylist function but does not actually updates it,
+  it only throw statuses for each one.
+  */
   static async updatePlaylistsNoUpdate() {
+
     const users = await UserController.getAllUsers();
+
     console.log(`running ${users.length} jobs | ${new Date()}`);
     // const playlistCover = 'images/playlistCover.jpeg';
     // await Promise.all(users.map(user => this.updatePlaylist(user, null)));
@@ -996,6 +1028,7 @@ class SpotifyHelper {
         console.log('PLAYLIST EXISTS', await doesMyPlaylistExist);
 
         console.log(' ');
+
       } catch (e) {
         console.log(e);
       }
@@ -1003,7 +1036,7 @@ class SpotifyHelper {
 
     console.log(`${users.length} jobs complete | ${new Date()}`);
   }
-
+  // FUNCTION REVIEWED
 
 }
 
