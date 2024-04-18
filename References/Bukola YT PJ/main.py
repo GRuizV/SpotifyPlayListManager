@@ -6,11 +6,17 @@
 
 from dotenv import load_dotenv
 import os
+import json
+import requests
 
+# Loading environmental variables which include clients secrets
 load_dotenv()
 
+
+# CONSTANTS
 SPOTIFY_USR = os.getenv('SPOTIFY_USER')
-print(SPOTIFY_USR)
+
+
 
 
 class CreatePlaylist:
@@ -29,8 +35,34 @@ class CreatePlaylist:
 
     # Step 3: Create a New Playlist
     @staticmethod
-    def create_playlist():
+    def create_playlist() -> str:
+        
+        '''This function creates a new playlist and returns the new Playlist ID'''
+
+        details = {
+            "name" : "Youtube Liked Vids",
+            "description" : "All Youtube Liked Videos Songs",
+            "public" : False
+        }
+        
+        query = f"https://api.spotify.com/v1/users/{SPOTIFY_USR}/playlists"
+
+        headers = {
+            "Content-Type" : "application/json",
+            "Authorization" : f"Bearer"
+
+        }
+
+
+        response = requests.post(query, details)
+
+
+    # Step 3.1: Get Token -> This is going to be a next step with working with a new and refreshed token case
+    @staticmethod
+    def get_access_token():
         pass
+
+
 
 
     # Step 4: Search for the Song
