@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import os
 import json
 import requests
+import base64
 
 # Loading environmental variables which include clients secrets
 load_dotenv()
@@ -15,7 +16,8 @@ load_dotenv()
 
 # CONSTANTS
 SPOTIFY_USR = os.getenv('SPOTIFY_USER')
-
+SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
+SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 
 
 
@@ -65,6 +67,12 @@ class CreatePlaylist:
 
 
 
+
+
+
+
+
+
     # Step 4: Search for the Song
     @staticmethod
     def get_spotify_uri():
@@ -75,3 +83,34 @@ class CreatePlaylist:
     @staticmethod
     def add_song_to_playlist():
         pass
+
+
+
+
+
+
+
+
+
+
+
+auth_string = f'{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}'
+auth_bytes = auth_string.encode('utf-8')
+auth_base64 = str(base64.b64encode(auth_bytes), 'utf-8')
+
+url = 'https://accounts.spotify.com/api/token'
+
+headers = {
+    'Authorization' : f'Basic {auth_base64}',
+    'Content-Type' : 'application/x-www-form-urlencoded'
+}
+
+data = {'grant_type' : "client_credentials"}
+
+response = requests.post(url, headers=headers, data=data)
+
+json_response = json.loads(response.content)
+
+token = json_response['access_token']
+
+print(token)
