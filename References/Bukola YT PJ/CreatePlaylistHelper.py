@@ -18,6 +18,10 @@ load_dotenv()
 SPOTIFY_USR = os.getenv('SPOTIFY_USER')
 SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
+REDIRECT_URI = 'http://localhost:3000'
+
+
+
 
 
 
