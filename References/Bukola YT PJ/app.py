@@ -21,15 +21,19 @@ app = flask.Flask(__name__)
 
 
 # Spotify Authorization setting
-redirect_uri = 'http://localhost:3000'
+redirect_uri = 'http://localhost:5000/callback'
 scope = 'playlist-read-private playlist-modify-private playlist-modify-public'
-spotify_auth_url = f'https://accounts.spotify.com/authorize?client_id={SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri={redirect_uri}&scope={scope}'
 
 
 
-@app.route('/authorize')
-def authorize():
 
-    
+@app.route('/')
+def index():
 
-    return flask.redirect(authorize)
+    spotify_auth_url = f'https://accounts.spotify.com/authorize?client_id={SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri={redirect_uri}&scope={scope}'
+    print(spotify_auth_url)
+    return f'<a href="{spotify_auth_url}">Authorize with Spotify</a>'
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

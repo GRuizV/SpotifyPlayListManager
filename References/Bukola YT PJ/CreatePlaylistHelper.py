@@ -15,10 +15,9 @@ load_dotenv()
 
 
 # CONSTANTS
-SPOTIFY_USR = os.getenv('SPOTIFY_USER')
 SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
-REDIRECT_URI = 'http://localhost:3000'
+
 
 
 
@@ -51,7 +50,7 @@ class CreatePlaylist:
             "public" : False
         }
         
-        query = f"https://api.spotify.com/v1/users/{SPOTIFY_USR}/playlists"
+        # query = f"https://api.spotify.com/v1/users/{SPOTIFY_USR}/playlists"
 
         headers = {
             "Content-Type" : "application/json",
@@ -60,7 +59,7 @@ class CreatePlaylist:
         }
 
 
-        response = requests.post(query, details)
+        # response = requests.post(query, details)
 
 
     # Step 3.1: Get Token -> This is going to be a next step with working with a new and refreshed token case
