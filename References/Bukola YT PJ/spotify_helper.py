@@ -12,27 +12,55 @@ load_dotenv()
 # CONSTANTS
 SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
-REDIRECT_URI = 'http://localhost:5000/callback'
+REDIRECT_URI = 'http://localhost:5001/callback'
+TOKEN_FILE = 'tokens.json'
+SPOTIFY_AUTH_SCOPE = 'playlist-read-private%20playlist-modify-private%20playlist-modify-public'
+
 
 # Global variables for storing tokens
-access_token = None
-refreshed_token = None
-expires_in = None
+tokens = {}
 
 
 
 class SpotifyHelper:
 
     @classmethod
-    def authorize(cls):
+    def load_tokens(cls):
+        
+        global tokens
 
-        global access_token, refreshed_token, expires_in
+        if os.path.exist(TOKEN_FILE):
+            with open(TOKEN_FILE, 'r') as file:
+                tokens = json.load(file)
 
-        # Construct the authorization URL
-        auth_url = f'https://accounts.spotify.com/authorize?client_id={SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&scope=playlist-read-private%20playlist-modify-public'
+    @classmethod
+    def save_tokens(cls):
+        
+        global tokens
+
+        with open(TOKEN_FILE, 'w') as file:
+            json.dump(tokens, file)
+
+
+    @classmethod
+    def authorization(cls):
+        
+        auth_url = f'https://accounts.spotify.com/authorize?client_id={SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&scope={SPOTIFY_AUTH_SCOPE}'
         print(f'Please authorize the app by visiting the following URL:\n{auth_url}')
 
         # Wait for the user to authorize the app and obtain the authorization code
+        # Ask the App for the code retrieve after the authorization happens
+        # Handling an error if the response is not the expected.
+        # This function should return the code received.
+
+
+
+
+
+    @classmethod
+    def get_token(cls, code):
+
+        global tokens
 
         # Exchange the authorization code for an access token and refresh token
         code = input('Enter the authorization code: ')
@@ -85,7 +113,4 @@ class SpotifyHelper:
         expires_in = auth_data['expires_in']
 
         return access_token
-
-
-
 
