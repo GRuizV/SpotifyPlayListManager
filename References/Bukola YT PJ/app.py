@@ -5,15 +5,18 @@ import json
 from spotify_helper import SpotifyHelper
 
 
-
 # App setting
 app = flask.Flask(__name__)
 
 
+# CONSTANTS
+TOKENS_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Bukola YT PJ\tokens.json'
+
 
 @app.route('/')
 def home():
-    return SpotifyHelper.authorization()
+    auth_url = SpotifyHelper.authorization()
+    return flask.redirect(auth_url)
 
 
 @app.route('/callback')
@@ -24,8 +27,7 @@ def callback():
     if code:
 
         # Store the code in the tokens.json file ***Careful with the path***
-        tokens_json_file_path = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Bukola YT PJ\tokens.json'
-        with open(tokens_json_file_path, 'w') as f:
+        with open(TOKENS_JSON_FILE_PATH, 'w') as f:
             json.dump({'code': code}, f)
 
         # Redirect to a success page
