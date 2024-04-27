@@ -38,21 +38,6 @@ class SpotifyHelper:
 
 
     @classmethod
-    def authorization(cls):
-        
-        auth_url = f'https://accounts.spotify.com/authorize?client_id={SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&scope={SPOTIFY_AUTH_SCOPE}'
-        print(f'Please authorize the app by visiting the following URL:\n{auth_url}')
-
-        # Wait for the user to authorize the app and obtain the authorization code
-        # Ask the App for the code retrieve after the authorization happens
-        # Handling an error if the response is not the expected.
-        # This function should return the code received.
-
-
-
-
-
-    @classmethod
     def get_token(cls, code):
 
         global tokens

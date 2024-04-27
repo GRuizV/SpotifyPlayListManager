@@ -11,8 +11,21 @@ app = flask.Flask(__name__)
 
 @app.route('/')
 def home():
-    auth_url = spotify_helper.SpotifyHelper.authorization()
-    return flask.redirect(auth_url)
+    
+    # Spotify authorization URL
+    auth_url = f'https://accounts.spotify.com/authorize?client_id={spotify_helper.SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri={spotify_helper.REDIRECT_URI}&scope={spotify_helper.SPOTIFY_AUTH_SCOPE}'
+    
+    # HTML content with embedded URL
+    html_content = f"""
+    <html>
+    <body>
+    <h1>Welcome to the Spotify Playlist Manager!</h1>
+    <p>Please authorize the app by visiting the following URL:</p>
+    <a href="{auth_url}">{auth_url}</a>
+    </body>
+    </html>
+    """
+    return html_content
 
 
 @app.route('/callback')
