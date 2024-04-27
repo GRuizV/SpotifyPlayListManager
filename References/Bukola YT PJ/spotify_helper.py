@@ -13,33 +13,28 @@ load_dotenv()
 SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 REDIRECT_URI = 'http://localhost:5000/callback'
-TOKEN_FILE = 'tokens.json'
 SPOTIFY_AUTH_SCOPE = 'playlist-read-private%20playlist-modify-private%20playlist-modify-public'
-
-
-# Global variables for storing tokens
-tokens = {}
-
+TOKENS_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Bukola YT PJ\tokens.json'
 
 
 class SpotifyHelper:
 
-    @classmethod
-    def load_tokens(cls):
+    # @classmethod
+    # def load_tokens(cls):
         
-        global tokens
+    #     global tokens
 
-        if os.path.exist(TOKEN_FILE):
-            with open(TOKEN_FILE, 'r') as file:
-                tokens = json.load(file)
+    #     if os.path.exist(TOKEN_FILE):
+    #         with open(TOKEN_FILE, 'r') as file:
+    #             tokens = json.load(file)
 
-    @classmethod
-    def save_tokens(cls):
+    # @classmethod
+    # def save_tokens(cls):
         
-        global tokens
+    #     global tokens
 
-        with open(TOKEN_FILE, 'w') as file:
-            json.dump(tokens, file)
+    #     with open(TOKEN_FILE, 'w') as file:
+    #         json.dump(tokens, file)
 
 
     @classmethod

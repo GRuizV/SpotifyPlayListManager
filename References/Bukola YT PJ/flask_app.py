@@ -1,21 +1,17 @@
-import flask
-import requests
-import base64
-import json
-from spotify_helper import SpotifyHelper
-
-
-# App setting
-app = flask.Flask(__name__)
+import flask, json
+import spotify_helper
 
 
 # CONSTANTS
 TOKENS_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Bukola YT PJ\tokens.json'
 
 
+# Flask app setting
+app = flask.Flask(__name__)
+
 @app.route('/')
 def home():
-    auth_url = SpotifyHelper.authorization()
+    auth_url = spotify_helper.SpotifyHelper.authorization()
     return flask.redirect(auth_url)
 
 
@@ -43,5 +39,7 @@ def sucess():
     return f'<h1> Authorization successful! Now you can start to modify your playlists.</h1>'
 
 
+
 if __name__ == '__main__':
+
     app.run(port=5000)
