@@ -10,7 +10,6 @@ TOKENS_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spot
 
 
 # GREETING AND FIRST CONTACT
-
 print('''
 \nHey! Welcome to the Spotify Playlist Manager app.
 Thanks for your preference for our service, 
@@ -26,40 +25,43 @@ Ok. Now, let's get going...
 '''
 )
 
+
 greeting_response = input('- Is this your first time using the app or did you revoke authorization from spotify priorly? (Y/N)\n').upper()
 
+# Input handling
 while greeting_response not in ('Y', 'N'):
     print('\nSorry, invalid answer...')
     greeting_response = input('\n- Is this your first time using the app or did you revoke authorization from spotify priorly? (Y/N)\n').upper()
 
 
-if greeting_response == 'Y':
-    
-    print(f'''\n- Alright, so in order for us to manage your playlist, the first thing we need is to get an authorization code from Spotify,
-and to do so, one necessary step is to have the flask_app (server) running because it will receive the code.
-    
-    Now, with the server up and running, please go to the link below and authorize the access for this app into your Spotify Account
 
-Link: https://accounts.spotify.com/authorize?client_id={spotify_helper.SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri={spotify_helper.REDIRECT_URI}&scope={spotify_helper.SPOTIFY_AUTH_SCOPE}\n''')
-
-
-    greeting_response = input('Let us know when you completed the authorization process by typing any key or typing exit to close the app: ').casefold()
-
-    if greeting_response == 'exit':
-        print('\nClosing down... (Remember to shut down the server!)')
-
-    else:
-        with open(TOKENS_JSON_FILE_PATH, 'r') as f:
-
-            try:
-                tokens_contents = json.load(f)
-                code = tokens_contents.get('code')
-                print('\n   - Fantastic! we got the code, now we can proceed...\n')
-
-            except Exception as e:
-                raise Exception(f'\n  - Apparently we have not received a code')
+# If Authorization is needed
+if greeting_response == 'Y':    
+    code = spotify_helper.SpotifyHelper.authorize()
             
                 
+
+
+# TOKEN CHECKING: Revising is a Token already exist in the tokens.json file
+with open(TOKENS_JSON_FILE_PATH, 'r') as f:
+
+    try:
+        tokens_contents = json.load(f)
+        token = tokens_contents.get('token')
+
+        if token is not None:
+            print('\n   - It was confirmed that we also got a token to proceed.\n')
+        
+        else:
+            print(f'''\n  ERROR: Apparently we don't have have a Token to work with, please go back to the authorization process so we can ask for a Token to modify your playlist on your behalf.''')
+            raise Exception(f'''\n  ERROR: Apparently we don't have have a Token to work with, please go back to the authorization process so we can ask for a Token to modify your playlist on your behalf.''')
+                
+    except Exception as e:
+        raise Exception(f'''\n  ERROR - {e} -: Apparently we don't have have a Token to work with, please go back to the authorization process so we can ask for a Token to modify your playlist on your behalf.''')
+
+
+
+
 
 # Now that we made sure we have a code to work with...
 
