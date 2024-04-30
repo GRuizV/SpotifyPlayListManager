@@ -33,45 +33,45 @@ while greeting_response not in ('Y', 'N'):
 
 
 
-# If Authorization is needed
+
+# IF AUTHORIZATION IS NEEDED
 if greeting_response == 'Y':    
 
     code = spotify_helper.SpotifyHelper.authorize()
     token, refresh_token = spotify_helper.SpotifyHelper.get_token(code=code)
 
-    print(f'''\n apparently we got everything we need to continue...''')
+    print(f'''\n- Great! Apparently we got everything we need to continue...''')
 
 
 
 
+# IF AUTHORIZATION IS NOT NEEDED
+with open(TOKENS_JSON_FILE_PATH) as f:
+    data = json.load(f)
+    token = data['access_token']
 
-# TOKEN CHECKING: Revising is a Token already exist in the tokens.json file
-with open(TOKENS_JSON_FILE_PATH, 'r') as f:
+    if token is None:
+        raise Exception('''No token was found, please go back and authorize the app (Answer 'Y' to the first question in the Menu)''')
 
-    try:
-        tokens_contents = json.load(f)
-        token = tokens_contents.get('token')
+print(f'''\n- Great! Apparently we got everything we need to continue...\n''')
 
-        if token is not None:
-            print('\n   - It was confirmed that we also got a token to proceed.\n')
-        
-        else:
-            print(f'''\n  ERROR: Apparently we don't have have a Token to work with, please go back to the authorization process so we can ask for a Token to modify your playlist on your behalf.''')
-            raise Exception(f'''\n  ERROR: Apparently we don't have have a Token to work with, please go back to the authorization process so we can ask for a Token to modify your playlist on your behalf.''')
-                
-    except Exception as e:
-        raise Exception(f'''\n  ERROR - {e} -: Apparently we don't have have a Token to work with, please go back to the authorization process so we can ask for a Token to modify your playlist on your behalf.''')
+print(f'''\n- Now, we are just refreshing the access token to make sure this session won't have any issues later...\n''')
 
+old_access_token = data['access_token']
+old_refresh_token = data['refresh_token']
+
+new_access_token, new_refresh_token = spotify_helper.SpotifyHelper.refresh_token(data['refresh_token'])
+
+if not new_refresh_token or not new_refresh_token:
+    raise Exception('Oops! Something went wrong resfreshing the tokens.')
+ 
+print('''- Now with refreshed tokens, we can start now managing your playlist''')
 
 
 
 
 # Now that we made sure we have a code to work with...
-
-# 1. Review the Corey Schafer's JSON and Context Manager tutorials.
-    # - Resolve the issue with the JSON file
-    # - Cover the case when is not a first contact user.
-
+# 1. Include a timestamp in the prompt messages.
 # 2. After having a token, go back to Bukola's pj to keep learning.
 
 

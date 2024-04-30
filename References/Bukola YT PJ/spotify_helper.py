@@ -34,23 +34,20 @@ class SpotifyHelper:
             print('\nClosing down... (Remember to shut down the server!)')
 
         else:
-            with open(TOKENS_JSON_FILE_PATH, 'r') as f:
+            with open(TOKENS_JSON_FILE_PATH) as f:
+              
+                data = json.load(f)
+                code = data['code']
+                
+                if code is not None:
 
-                try:
-                    tokens_contents = json.load(f)
-                    code = tokens_contents.get('code')
-                    
-                    if code is not None:
+                    print('\n- Fantastic! we got the code, now we can proceed...\n')
+                    return code
 
-                        print('\n   - Fantastic! we got the code, now we can proceed...\n')
-                        return code
+                else:
+                    print(f'''\n  ERROR: Apparently we didn't receive a code!''')
+                    raise Exception(f'''\n  ERROR: Apparently we didn't receive a code!''')
 
-                    else:
-                        print(f'''\n  ERROR: Apparently we didn't receive a code!''')
-                        raise Exception(f'''\n  ERROR: Apparently we didn't receive a code!''')
-
-                except Exception as e:
-                    raise Exception(f'''\n  ERROR -{e}-: Apparently we didn't receive a code!''')
 
 
     @classmethod
@@ -72,10 +69,15 @@ class SpotifyHelper:
             access_token = auth_data['access_token']
             refresh_token = auth_data['refresh_token']
             
+            # Opening the tokens.json file to save the tokens
+            with open(TOKENS_JSON_FILE_PATH) as f:
+                data = json.load(f)
+
             # Saving the updated tokens in the JSON file
             with open(TOKENS_JSON_FILE_PATH, 'w') as f:
-                json.dump({'access_token': access_token}, f)
-                json.dump({'refresh_token': refresh_token}, f)
+                data['access_token'] = access_token
+                data['refresh_token'] = refresh_token
+                json.dump(data, f, indent=2)
 
             return access_token, refresh_token
         
@@ -103,13 +105,18 @@ class SpotifyHelper:
             # Note: 'refresh_token' may not always be returned in refresh token requests
             refresh_token = auth_data.get('refresh_token',refresh_token)
             
+            # Opening the tokens.json file to save the tokens
+            with open(TOKENS_JSON_FILE_PATH) as f:
+                data = json.load(f)
+
             # Saving the updated tokens in the JSON file
             with open(TOKENS_JSON_FILE_PATH, 'w') as f:
-                json.dump({'access_token': access_token}, f)
-                json.dump({'refresh_token': refresh_token}, f)
-
+                data['access_token'] = access_token
+                data['refresh_token'] = refresh_token
+                json.dump(data, f, indent=2)
+                
             return access_token, refresh_token
-    
+             
         except requests.exceptions.RequestException as e:
             print(f'ERROR FETCHING TOKEN: {e}')
             return None, None

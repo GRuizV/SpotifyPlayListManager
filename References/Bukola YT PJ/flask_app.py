@@ -35,9 +35,13 @@ def callback():
 
     if code:
 
+        with open(TOKENS_JSON_FILE_PATH) as f:
+            data = json.load(f)
+
         # Store the code in the tokens.json file ***Careful with the path***
         with open(TOKENS_JSON_FILE_PATH, 'w') as f:
-            json.dump({'code': code}, f)
+            data['code'] = code
+            json.dump(data, f, indent=2)
 
         # Redirect to a success page
         return flask.redirect('/sucess')
