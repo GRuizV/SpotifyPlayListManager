@@ -1,9 +1,7 @@
 from dotenv import load_dotenv
 import os
-import json
-import requests
-import base64
-import time
+import json, requests, base64
+
 
 # Loading environmental variables which include clients secrets
 load_dotenv()
@@ -43,6 +41,7 @@ class SpotifyHelper:
                     code = tokens_contents.get('code')
                     
                     if code is not None:
+
                         print('\n   - Fantastic! we got the code, now we can proceed...\n')
                         return code
 
@@ -57,55 +56,62 @@ class SpotifyHelper:
     @classmethod
     def get_token(cls, code):
 
-        # Exchange the authorization code for an access token and refresh token
-        code = input('Enter the authorization code: ')
-        url = 'https://accounts.spotify.com/api/token'
-        headers = {'Authorization': 'Basic ' + base64.b64encode(f'{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}'.encode()).decode()}
-        data = {
-            'grant_type': 'authorization_code',
-            'code': code,
-            'redirect_uri': REDIRECT_URI
-        }
-                
-        response = requests.post(url, headers=headers, data=data)
-        auth_data = response.json()
-        access_token = auth_data['access_token']
-        refreshed_token = auth_data['refresh_token']
-        expires_in = auth_data['expires_in']
+        try:
+            # POST Request setting
+            url = 'https://accounts.spotify.com/api/token'
+            headers = {'Authorization': 'Basic ' + base64.b64encode(f'{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}'.encode()).decode()}
+            data = {
+                'grant_type': 'authorization_code',
+                'code': code,
+                'redirect_uri': REDIRECT_URI
+            }
+            
+            response = requests.post(url, headers=headers, data=data)
+            response.raise_for_status() # Raise exception for HTTP errors
+            auth_data = response.json()
+            access_token = auth_data['access_token']
+            refresh_token = auth_data['refresh_token']
+            
+            # Saving the updated tokens in the JSON file
+            with open(TOKENS_JSON_FILE_PATH, 'w') as f:
+                json.dump({'access_token': access_token}, f)
+                json.dump({'refresh_token': refresh_token}, f)
+
+            return access_token, refresh_token
+        
+        except requests.exceptions.RequestException as e:
+            print(f'ERROR FETCHING TOKEN: {e}')
+            return None, None
 
 
     @classmethod
-    def is_token_valid(cls):
-        global access_token, expires_in
+    def refresh_token(cls, refresh_token):
 
-        if access_token is None or expires_in is None:
-            return False
+        try:
+            # POST Request setting
+            url = 'https://accounts.spotify.com/api/token'
+            headers = {'Authorization': 'Basic ' + base64.b64encode(f'{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}'.encode()).decode()}
+            data = {
+                'grant_type': 'refresh_token',
+                'refresh_token': refresh_token
+            }
 
-        # Check if the access token is expired
-        expiration_time = time.time() + expires_in
-        if expiration_time < time.time() + 60:  # Check if the token will expire in the next 60 seconds
-            return False
+            response = requests.post(url, headers=headers, data=data)
+            response.raise_for_status() # Raise exception for HTTP errors
+            auth_data = response.json()
+            access_token = auth_data['access_token']
+            # Note: 'refresh_token' may not always be returned in refresh token requests
+            refresh_token = auth_data.get('refresh_token',refresh_token)
+            
+            # Saving the updated tokens in the JSON file
+            with open(TOKENS_JSON_FILE_PATH, 'w') as f:
+                json.dump({'access_token': access_token}, f)
+                json.dump({'refresh_token': refresh_token}, f)
 
-        return True
+            return access_token, refresh_token
+    
+        except requests.exceptions.RequestException as e:
+            print(f'ERROR FETCHING TOKEN: {e}')
+            return None, None
 
-
-    @classmethod
-    def refresh_token(cls):
-        global access_token, refreshed_token, expires_in
-
-        url = 'https://accounts.spotify.com/api/token'
-        headers = {'Authorization': 'Basic ' + base64.b64encode(f'{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}'.encode()).decode()}
-
-        data = {
-            'grant_type': 'refresh_token',
-            'refresh_token': refreshed_token
-        }
-
-        response = requests.post(url, headers=headers, data=data)
-
-        auth_data = response.json()
-        access_token = auth_data['access_token']
-        expires_in = auth_data['expires_in']
-
-        return access_token
 

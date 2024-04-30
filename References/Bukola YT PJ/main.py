@@ -1,8 +1,6 @@
-import requests
-import base64
 import json
 import spotify_helper
-import time
+
 
 # CONSTANTS
 TOKENS_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Bukola YT PJ\tokens.json'
@@ -37,9 +35,14 @@ while greeting_response not in ('Y', 'N'):
 
 # If Authorization is needed
 if greeting_response == 'Y':    
+
     code = spotify_helper.SpotifyHelper.authorize()
-            
-                
+    token, refresh_token = spotify_helper.SpotifyHelper.get_token(code=code)
+
+    print(f'''\n apparently we got everything we need to continue...''')
+
+
+
 
 
 # TOKEN CHECKING: Revising is a Token already exist in the tokens.json file
@@ -65,7 +68,10 @@ with open(TOKENS_JSON_FILE_PATH, 'r') as f:
 
 # Now that we made sure we have a code to work with...
 
-# 1. Understand how the tokens works and implement the token requesting and refreshing
+# 1. Review the Corey Schafer's JSON and Context Manager tutorials.
+    # - Resolve the issue with the JSON file
+    # - Cover the case when is not a first contact user.
+
 # 2. After having a token, go back to Bukola's pj to keep learning.
 
 
