@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 import json, requests, base64
+from datetime import datetime
 
 
 # Loading environmental variables which include clients secrets
@@ -14,13 +15,18 @@ REDIRECT_URI = 'http://localhost:5000/callback'
 SPOTIFY_AUTH_SCOPE = 'playlist-read-private%20playlist-modify-private%20playlist-modify-public'
 TOKENS_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Bukola YT PJ\tokens.json'
 
+#MESSAGE VARIABLES
+now = datetime.now()
+timestamp = now.strftime("%d/%m/%Y %H:%M:%S")
 
+
+# The class definition (Any operation with spotify will be handled here)
 class SpotifyHelper:
 
     @classmethod
     def authorize(cls):
 
-        print(f'''\n- Alright, so in order for us to manage your playlist, the first thing we need is to get an authorization code from Spotify,
+        print(f'''\n[{timestamp}] - Alright, so in order for us to manage your playlists, the first thing we need is to get an authorization code from Spotify,
     and to do so, one necessary step is to have the flask_app (server) running because it will receive the code.
         
         Now, with the server up and running, please go to the link below and authorize the access for this app into your Spotify Account
@@ -28,10 +34,12 @@ class SpotifyHelper:
     Link: https://accounts.spotify.com/authorize?client_id={SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&scope={SPOTIFY_AUTH_SCOPE}\n''')
 
 
-        greeting_response = input('Let us know when you completed the authorization process by typing any key or typing exit to close the app: ').casefold()
+        confirmation_response = input(f'''[{timestamp}] - Let us know when you completed the authorization process by typing any key or typing 'exit' to close the app: ''').casefold()
 
-        if greeting_response == 'exit':
-            print('\nClosing down... (Remember to shut down the server!)')
+        if confirmation_response == 'exit':
+            print(f'\n[{timestamp}] - Closing down... (Remember to shut down the server!)')
+
+            # ***HERE NEEDS TO BE A CLOSING FUNCTION TO STOP THE APP.
 
         else:
             with open(TOKENS_JSON_FILE_PATH) as f:
@@ -41,11 +49,11 @@ class SpotifyHelper:
                 
                 if code is not None:
 
-                    print('\n- Fantastic! we got the code, now we can proceed...\n')
+                    print(f'\n[{timestamp}] - Fantastic! we got the code, now we can proceed...\n')
                     return code
 
                 else:
-                    print(f'''\n  ERROR: Apparently we didn't receive a code!''')
+                    print(f'\n[{timestamp}] - Oops!')
                     raise Exception(f'''\n  ERROR: Apparently we didn't receive a code!''')
 
 
@@ -56,7 +64,7 @@ class SpotifyHelper:
         try:
             # POST Request setting
             url = 'https://accounts.spotify.com/api/token'
-            headers = {'Authorization': 'Basic ' + base64.b64encode(f'{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}'.encode()).decode()}
+            headers = {'Authorization': f'Basic {base64.b64encode(f'{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}'.encode()).decode()}'}
             data = {
                 'grant_type': 'authorization_code',
                 'code': code,
@@ -82,7 +90,7 @@ class SpotifyHelper:
             return access_token, refresh_token
         
         except requests.exceptions.RequestException as e:
-            print(f'ERROR FETCHING TOKEN: {e}')
+            print(f'\n[{timestamp}] - ERROR FETCHING TOKEN: {e}')
             return None, None
 
 
@@ -92,7 +100,7 @@ class SpotifyHelper:
         try:
             # POST Request setting
             url = 'https://accounts.spotify.com/api/token'
-            headers = {'Authorization': 'Basic ' + base64.b64encode(f'{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}'.encode()).decode()}
+            headers = {'Authorization': f'Basic {base64.b64encode(f'{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}'.encode()).decode()}'}
             data = {
                 'grant_type': 'refresh_token',
                 'refresh_token': refresh_token
@@ -103,7 +111,7 @@ class SpotifyHelper:
             auth_data = response.json()
             access_token = auth_data['access_token']
             # Note: 'refresh_token' may not always be returned in refresh token requests
-            refresh_token = auth_data.get('refresh_token',refresh_token)
+            refresh_token = auth_data.get('refresh_token', refresh_token)
             
             # Opening the tokens.json file to save the tokens
             with open(TOKENS_JSON_FILE_PATH) as f:
@@ -118,7 +126,7 @@ class SpotifyHelper:
             return access_token, refresh_token
              
         except requests.exceptions.RequestException as e:
-            print(f'ERROR FETCHING TOKEN: {e}')
+            print(f'\n[{timestamp}] - ERROR FETCHING TOKEN: {e}')
             return None, None
 
 

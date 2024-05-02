@@ -20,8 +20,8 @@ def home():
     <html>
     <body>
     <h1>Welcome to the Spotify Playlist Manager!</h1>
-    <p>Please authorize the app by visiting the following URL:</p>
-    <a href="{auth_url}">{auth_url}</a>
+    <p>Please authorize the app by visiting the following Link:</p>
+    <a href="{auth_url}">Link</a>
     </body>
     </html>
     """
