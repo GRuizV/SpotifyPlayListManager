@@ -1,0 +1,174 @@
+{
+    "tracks": {
+
+      "href": "https://api.spotify.com/v1/search?query=remaster%2520track%3Acicuta%2520artist%3Anoisefaratu&type=track&market=CO&locale=es-ES%2Ces%3Bq%3D0.9&offset=0&limit=20",
+      "limit": 20,
+      "next": "https://api.spotify.com/v1/search?query=remaster%2520track%3Acicuta%2520artist%3Anoisefaratu&type=track&market=CO&locale=es-ES%2Ces%3Bq%3D0.9&offset=20&limit=20",
+      "offset": 0,
+      "previous": null,
+      "total": 619,
+
+      "items": [
+
+        {
+          "album": {
+            "album_type": "album",
+            "total_tracks": 13,
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/0SbXA1RL0qUMjEx8quy6l0"
+            },
+            "href": "https://api.spotify.com/v1/albums/0SbXA1RL0qUMjEx8quy6l0",
+            "id": "0SbXA1RL0qUMjEx8quy6l0",
+            "images": [
+              {
+                "url": "https://i.scdn.co/image/ab67616d0000b273fc8856251b63a57bb7735be3",
+                "height": 640,
+                "width": 640
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00001e02fc8856251b63a57bb7735be3",
+                "height": 300,
+                "width": 300
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00004851fc8856251b63a57bb7735be3",
+                "height": 64,
+                "width": 64
+              }
+            ],
+            "name": "Noiseferatu",
+            "release_date": "2018-11-02",
+            "release_date_precision": "day",
+            "type": "album",
+            "uri": "spotify:album:0SbXA1RL0qUMjEx8quy6l0",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/2Y3XKZXXGA7qPFrOjJqWgV"
+                },
+                "href": "https://api.spotify.com/v1/artists/2Y3XKZXXGA7qPFrOjJqWgV",
+                "id": "2Y3XKZXXGA7qPFrOjJqWgV",
+                "name": "Noiseferatu",
+                "type": "artist",
+                "uri": "spotify:artist:2Y3XKZXXGA7qPFrOjJqWgV"
+              }
+            ],
+            "is_playable": true
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/2Y3XKZXXGA7qPFrOjJqWgV"
+              },
+              "href": "https://api.spotify.com/v1/artists/2Y3XKZXXGA7qPFrOjJqWgV",
+              "id": "2Y3XKZXXGA7qPFrOjJqWgV",
+              "name": "Noiseferatu",
+              "type": "artist",
+              "uri": "spotify:artist:2Y3XKZXXGA7qPFrOjJqWgV"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 129500,
+          "explicit": true,
+          "external_ids": {
+            "isrc": "US7VG1819240"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/2NlSmJIQ1sX3SltQglJ2XQ"
+          },
+          "href": "https://api.spotify.com/v1/tracks/2NlSmJIQ1sX3SltQglJ2XQ",
+
+          "id": "2NlSmJIQ1sX3SltQglJ2XQ",
+
+          "is_playable": true,
+          "name": "Cicuta",
+          "popularity": 49,
+          "preview_url": "https://p.scdn.co/mp3-preview/e8ae3540696a4c4e9f09259036bd8b2b68f23467?cid=cfe923b2d660439caf2b557b21f31221",
+          "track_number": 12,
+          "type": "track",
+          "uri": "spotify:track:2NlSmJIQ1sX3SltQglJ2XQ",
+          "is_local": false
+        },
+
+        {
+          "album": {
+            "album_type": "single",
+            "total_tracks": 1,
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/35uK2Zi8StQYtewvt2PaFD"
+            },
+            "href": "https://api.spotify.com/v1/albums/35uK2Zi8StQYtewvt2PaFD",
+            "id": "35uK2Zi8StQYtewvt2PaFD",
+            "images": [
+              {
+                "url": "https://i.scdn.co/image/ab67616d0000b2731e367dc296066a15ac97544b",
+                "height": 640,
+                "width": 640
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00001e021e367dc296066a15ac97544b",
+                "height": 300,
+                "width": 300
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d000048511e367dc296066a15ac97544b",
+                "height": 64,
+                "width": 64
+              }
+            ],
+            "name": "Noiseferatu",
+            "release_date": "2014-12-20",
+            "release_date_precision": "day",
+            "type": "album",
+            "uri": "spotify:album:35uK2Zi8StQYtewvt2PaFD",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/6Q2qjWAdEjIQkoqXIPCEqm"
+                },
+                "href": "https://api.spotify.com/v1/artists/6Q2qjWAdEjIQkoqXIPCEqm",
+                "id": "6Q2qjWAdEjIQkoqXIPCEqm",
+                "name": "Rapiphero Noiseferatu",
+                "type": "artist",
+                "uri": "spotify:artist:6Q2qjWAdEjIQkoqXIPCEqm"
+              }
+            ],
+            "is_playable": true
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/6Q2qjWAdEjIQkoqXIPCEqm"
+              },
+              "href": "https://api.spotify.com/v1/artists/6Q2qjWAdEjIQkoqXIPCEqm",
+              "id": "6Q2qjWAdEjIQkoqXIPCEqm",
+              "name": "Rapiphero Noiseferatu",
+              "type": "artist",
+              "uri": "spotify:artist:6Q2qjWAdEjIQkoqXIPCEqm"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 274456,
+          "explicit": true,
+          "external_ids": {
+            "isrc": "ushm21659486"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/6zgUmb0a6ZbsShn5QZYuoG"
+          },
+          "href": "https://api.spotify.com/v1/tracks/6zgUmb0a6ZbsShn5QZYuoG",
+          "id": "6zgUmb0a6ZbsShn5QZYuoG",
+          "is_playable": true,
+          "name": "Noiseferatu",
+          "popularity": 29,
+          "preview_url": "https://p.scdn.co/mp3-preview/c7725263d5012b0df2bebffa8cc76bc1ea3f4aa1?cid=cfe923b2d660439caf2b557b21f31221",
+          "track_number": 1,
+          "type": "track",
+          "uri": "spotify:track:6zgUmb0a6ZbsShn5QZYuoG",
+          "is_local": false
+        }
+    ]
+    }
+}
+
+

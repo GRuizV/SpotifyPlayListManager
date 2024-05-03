@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 # CONSTANTS
-TOKENS_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Bukola YT PJ\tokens.json'
+TOKENS_JSON_FILE_PATH = spotify_helper.TOKENS_JSON_FILE_PATH
 
 
 #MESSAGE VARIABLES
@@ -79,8 +79,6 @@ print(f'''[{timestamp}] - Now with refreshed tokens, we can start now managing y
 # ***HERE WILL BE THE MAIN MENU.
 
 
-
-# 2. After having a token, go back to Bukola's pj to keep learning.
 
 
 

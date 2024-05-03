@@ -3,7 +3,7 @@ import spotify_helper
 
 
 # CONSTANTS
-TOKENS_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Bukola YT PJ\tokens.json'
+TOKENS_JSON_FILE_PATH = spotify_helper.TOKENS_JSON_FILE_PATH
 
 
 # Flask app setting
