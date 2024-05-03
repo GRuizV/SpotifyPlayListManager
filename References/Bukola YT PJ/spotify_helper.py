@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 import json, requests, base64
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 # Loading environmental variables which include clients secrets
@@ -25,6 +25,9 @@ class SpotifyHelper:
 
     @classmethod
     def authorize(cls):
+
+        '''This function collects the authorization code from the flask server when the user gives its approval'''
+
 
         print(f'''\n[{timestamp}] - Alright, so in order for us to manage your playlists, the first thing we need is to get an authorization code from Spotify,
     and to do so, one necessary step is to have the flask_app (server) running because it will receive the code.
@@ -61,6 +64,8 @@ class SpotifyHelper:
     @classmethod
     def get_token(cls, code):
 
+        '''This function request a token just after the authorization code is received, with a token and a refresh token no further authorization is needed to work'''
+
         try:
             # POST Request setting
             url = 'https://accounts.spotify.com/api/token'
@@ -76,6 +81,8 @@ class SpotifyHelper:
             auth_data = response.json()
             access_token = auth_data['access_token']
             refresh_token = auth_data['refresh_token']
+            expiration_time = datetime.now() + timedelta(seconds=3600)
+            expiration_time_str = expiration_time.isoformat()+'Z'
             
             # Opening the tokens.json file to save the tokens
             with open(TOKENS_JSON_FILE_PATH) as f:
@@ -85,6 +92,7 @@ class SpotifyHelper:
             with open(TOKENS_JSON_FILE_PATH, 'w') as f:
                 data['access_token'] = access_token
                 data['refresh_token'] = refresh_token
+                data['expiration_time'] = expiration_time_str
                 json.dump(data, f, indent=2)
 
             return access_token, refresh_token
@@ -96,6 +104,9 @@ class SpotifyHelper:
 
     @classmethod
     def refresh_token(cls, refresh_token):
+
+        '''This function request a new token with a refresh token parameter, to keep working without having to ask for the user's authorization again'''
+
 
         try:
             # POST Request setting
@@ -112,6 +123,8 @@ class SpotifyHelper:
             access_token = auth_data['access_token']
             # Note: 'refresh_token' may not always be returned in refresh token requests
             refresh_token = auth_data.get('refresh_token', refresh_token)
+            expiration_time = datetime.now() + timedelta(seconds=3600)
+            expiration_time_str = expiration_time.isoformat()+'Z'
             
             # Opening the tokens.json file to save the tokens
             with open(TOKENS_JSON_FILE_PATH) as f:
@@ -121,6 +134,7 @@ class SpotifyHelper:
             with open(TOKENS_JSON_FILE_PATH, 'w') as f:
                 data['access_token'] = access_token
                 data['refresh_token'] = refresh_token
+                data['expiration_time'] = expiration_time_str
                 json.dump(data, f, indent=2)
                 
             return access_token, refresh_token
