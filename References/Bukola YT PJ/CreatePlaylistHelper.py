@@ -4,11 +4,11 @@
 # Step 4: Search for the Song
 # Step 5: Add this son into the new Spotify playlist
 
-from dotenv import load_dotenv
 import os
-import json
-import requests
-import base64
+import json, requests, base64
+import spotify_helper
+from dotenv import load_dotenv
+from datetime import datetime, timedelta
 
 # Loading environmental variables which include clients secrets
 load_dotenv()
@@ -17,6 +17,8 @@ load_dotenv()
 # CONSTANTS
 SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
+SPOTIFY_USER = os.getenv('SPOTIFY_USER')
+TOKENS_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Bukola YT PJ\tokens.json'
 
 
 
@@ -47,28 +49,40 @@ class CreatePlaylist:
         details = {
             "name" : "Youtube Liked Vids",
             "description" : "All Youtube Liked Videos Songs",
-            "public" : False
+            "public" : True
         }
         
-        # query = f"https://api.spotify.com/v1/users/{SPOTIFY_USR}/playlists"
+        query = f"https://api.spotify.com/v1/users/{SPOTIFY_USER}/playlists"
+
+        with open(TOKENS_JSON_FILE_PATH) as f:
+            data = json.load(f)
+            token = data['access_token']
+            expiration_time = datetime.fromisoformat(data['expiration_time'][:-1])  #The [:-1] is to take out the 'Z' parameter given we are computing this time later
+
+
+        # Checking if token refreshing is needed
+        if expiration_time < datetime.now() + timedelta(minutes=5):
+            token, refresh_token = spotify_helper.SpotifyHelper.refresh_token(data['refresh_token'])
 
         headers = {
             "Content-Type" : "application/json",
-            "Authorization" : f"Bearer"
-
+            "Authorization" : f"Bearer {token}"
         }
 
+        try:            
+            response = requests.post(url=query, data=json.dumps(details), headers=headers)
+            response.raise_for_status()
+            response_json = response.json()            
 
-        # response = requests.post(query, details)
+            #Returning the ID of the newly created playlist
+            return response_json['id']
 
+        except Exception as e:
 
-    # Step 3.1: Get Token -> This is going to be a next step with working with a new and refreshed token case
-    @staticmethod
-    def get_access_token():
-        pass
+            print(e)
+            return None
 
-
-
+      
 
 
 
@@ -94,26 +108,3 @@ class CreatePlaylist:
 
 
 
-
-
-
-auth_string = f'{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}'
-auth_bytes = auth_string.encode('utf-8')
-auth_base64 = str(base64.b64encode(auth_bytes), 'utf-8')
-
-url = 'https://accounts.spotify.com/api/token'
-
-headers = {
-    'Authorization' : f'Basic {auth_base64}',
-    'Content-Type' : 'application/x-www-form-urlencoded'
-}
-
-data = {'grant_type' : "client_credentials"}
-
-response = requests.post(url, headers=headers, data=data)
-
-json_response = json.loads(response.content)
-
-token = json_response['access_token']
-
-print(token)

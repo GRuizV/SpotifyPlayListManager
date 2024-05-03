@@ -47,7 +47,7 @@ if greeting_response == 'Y':
 
     print(f'''\n[{timestamp}] - Great! Apparently we got everything we need to continue...''')
 
-    # Here will continue with the Main menu.
+    # ***HERE WILL BE THE MAIN MENU.
 
 
 
@@ -76,12 +76,10 @@ if not new_refresh_token or not new_refresh_token:
  
 print(f'''[{timestamp}] - Now with refreshed tokens, we can start now managing your playlist''')
 
-# Here will continue with the Main menu.
+# ***HERE WILL BE THE MAIN MENU.
 
 
 
-# Now that we made sure we have a code to work with...
-# 1. Include a timestamp in the prompt messages.
 # 2. After having a token, go back to Bukola's pj to keep learning.
 
 
