@@ -81,15 +81,8 @@ class CreatePlaylist:
 
             print(e)
             return None
-
-      
-
-
-
-
-
-
-
+    
+    
     # Step 4: Search for the Song
     @staticmethod
     def get_spotify_uri():
@@ -99,12 +92,12 @@ class CreatePlaylist:
     # Step 5: Add the song into the new Spotify playlist
     @staticmethod
     def add_song_to_playlist():
-        pass
+        pass 
 
 
 
-
-
+pl_id=CreatePlaylist.create_playlist()
+print(pl_id)
 
 
 
