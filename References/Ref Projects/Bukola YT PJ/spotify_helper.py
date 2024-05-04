@@ -143,4 +143,27 @@ class SpotifyHelper:
             print(f'\n[{timestamp}] - ERROR FETCHING TOKEN: {e}')
             return None, None
 
+        
 
+    @classmethod
+    def request_token(cls) -> str:
+
+        '''
+        This functions is made to retrive a new token that has at least 5 minutes validity to execute.  
+
+            The difference with the get_token method is that get_token receives an authorization code when is just authenticated by the user
+            and not always is needed to go through that, but is also inefficient to ask for a token refreshing everytime a token is needed.
+
+        '''
+
+        # Access token retrival
+        with open(TOKENS_JSON_FILE_PATH) as f:
+            data = json.load(f)
+            token = data['access_token']
+            expiration_time = datetime.fromisoformat(data['expiration_time'][:-1])  #The [:-1] is to take out the 'Z' parameter given we are computing this time later
+
+        # Checking if token refreshing is needed
+        if expiration_time < datetime.now() + timedelta(minutes=5):
+            token, refresh_token = SpotifyHelper.refresh_token(data['refresh_token'])
+
+        return token
