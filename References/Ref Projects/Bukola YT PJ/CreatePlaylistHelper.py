@@ -18,9 +18,7 @@ load_dotenv()
 SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 SPOTIFY_USER = os.getenv('SPOTIFY_USER')
-TOKENS_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Bukola YT PJ\tokens.json'
-
-
+TOKENS_JSON_FILE_PATH = spotify_helper.TOKENS_JSON_FILE_PATH
 
 
 
@@ -54,21 +52,15 @@ class CreatePlaylist:
         
         query = f"https://api.spotify.com/v1/users/{SPOTIFY_USER}/playlists"
 
-        with open(TOKENS_JSON_FILE_PATH) as f:
-            data = json.load(f)
-            token = data['access_token']
-            expiration_time = datetime.fromisoformat(data['expiration_time'][:-1])  #The [:-1] is to take out the 'Z' parameter given we are computing this time later
-
-
-        # Checking if token refreshing is needed
-        if expiration_time < datetime.now() + timedelta(minutes=5):
-            token, refresh_token = spotify_helper.SpotifyHelper.refresh_token(data['refresh_token'])
+        # Access token requesting
+        token = spotify_helper.SpotifyHelper.request_token()
 
         headers = {
             "Content-Type" : "application/json",
             "Authorization" : f"Bearer {token}"
         }
 
+        # Sending the POST Request
         try:            
             response = requests.post(url=query, data=json.dumps(details), headers=headers)
             response.raise_for_status()
@@ -85,9 +77,54 @@ class CreatePlaylist:
     
     # Step 4: Search for the Song
     @staticmethod
-    def get_spotify_uri():
-        pass
+    def get_spotify_uri(song_name:str, artist:str) -> str:
 
+        '''This function retrieves the ID of a track'''
+
+        # Input treatment
+        song_name = song_name.replace(' ','%2520')
+        artist = artist.replace(' ','%2520')
+
+        # Example query: (Cicuta - Noiseferatu) 'https://api.spotify.com/v1/search?q=remaster%2520track%3Acicuta%2520artist%3Anoisefaratu&type=track&market=CO&offset=0'
+        query = f'https://api.spotify.com/v1/search?q=remaster%2520track%3A{song_name}%2520artist%3A{artist}&type=track&market=CO&offset=0' # The response I need is - response['tracks']['items'][0]['uri'] -.
+        
+        # Access token requesting
+        token = spotify_helper.SpotifyHelper.request_token()
+
+        # Building the 'headers'
+        headers = { 
+            "Content-Type" : "application/json",
+            "Authorization" : f"Bearer {token}"
+        } 
+
+
+        # Sending the GET Request
+        try:            
+            response = requests.get(url=query, headers=headers)
+            response.raise_for_status()
+            response_json = response.json()            
+
+            #this are the songs that match the search above
+            songs = response_json["tracks"]["items"]
+
+            print(query)
+            #this project only cared for the firs match ***(but mine could make a function to get the closest match)
+            uri = songs[0]["uri"]
+
+            return uri
+
+        except Exception as e:
+
+            print(e)
+            return None
+    
+
+        
+
+
+
+
+        
     
     # Step 5: Add the song into the new Spotify playlist
     @staticmethod
@@ -96,8 +133,18 @@ class CreatePlaylist:
 
 
 
-pl_id=CreatePlaylist.create_playlist()
-print(pl_id)
+
+
+# # 'get_spotify_uri' functions testing
+# art = 'Granuja'
+# song = 'Días de Perros'
+
+# print(f'\n{song.replace(' ', '%20')+'%20'}\n')
+
+# test = CreatePlaylist.get_spotify_uri(artist=art, song_name=song)
+# print(test)
+
+
 
 
 
