@@ -23,8 +23,8 @@ timestamp = now.strftime("%d/%m/%Y %H:%M:%S")
 # The class definition (Any operation with spotify will be handled here)
 class SpotifyHelper:
 
-    @classmethod
-    def authorize(cls):
+    @staticmethod   
+    def authorize():
 
         '''This function collects the authorization code from the flask server when the user gives its approval'''
 
@@ -61,8 +61,8 @@ class SpotifyHelper:
 
 
 
-    @classmethod
-    def get_token(cls, code):
+    @staticmethod   
+    def get_token(code):
 
         '''This function request a token just after the authorization code is received, with a token and a refresh token no further authorization is needed to work'''
 
@@ -102,8 +102,8 @@ class SpotifyHelper:
             return None, None
 
 
-    @classmethod
-    def refresh_token(cls, refresh_token):
+    @staticmethod   
+    def refresh_token(refresh_token):
 
         '''This function request a new token with a refresh token parameter, to keep working without having to ask for the user's authorization again'''
 
@@ -145,8 +145,8 @@ class SpotifyHelper:
 
         
 
-    @classmethod
-    def request_token(cls) -> str:
+    @staticmethod   
+    def request_token() -> str:
 
         '''
         This functions is made to retrive a new token that has at least 5 minutes validity to execute.  
