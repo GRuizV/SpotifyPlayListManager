@@ -3,7 +3,7 @@ import spotify_helper
 
 
 # CONSTANTS
-TOKENS_JSON_FILE_PATH = spotify_helper.TOKENS_JSON_FILE_PATH
+SPOTIFY_TOKENS_JSON_FILE_PATH = spotify_helper.SPOTIFY_TOKENS_JSON_FILE_PATH
 
 
 # Flask app setting
@@ -35,11 +35,11 @@ def callback():
 
     if code:
 
-        with open(TOKENS_JSON_FILE_PATH) as f:
+        with open(SPOTIFY_TOKENS_JSON_FILE_PATH) as f:
             data = json.load(f)
 
         # Store the code in the tokens.json file ***Careful with the path***
-        with open(TOKENS_JSON_FILE_PATH, 'w') as f:
+        with open(SPOTIFY_TOKENS_JSON_FILE_PATH, 'w') as f:
             data['code'] = code
             json.dump(data, f, indent=2)
 

@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 # CONSTANTS
-TOKENS_JSON_FILE_PATH = spotify_helper.TOKENS_JSON_FILE_PATH
+SPOTIFY_TOKENS_JSON_FILE_PATH = spotify_helper.SPOTIFY_TOKENS_JSON_FILE_PATH
 
 
 #MESSAGE VARIABLES
@@ -53,7 +53,7 @@ if greeting_response == 'Y':
 
 
 # IF AUTHORIZATION IS NOT NEEDED
-with open(TOKENS_JSON_FILE_PATH) as f:
+with open(SPOTIFY_TOKENS_JSON_FILE_PATH) as f:
     data = json.load(f)
     token = data['access_token']
 

@@ -13,7 +13,7 @@ SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 REDIRECT_URI = 'http://localhost:5000/callback'
 SPOTIFY_AUTH_SCOPE = 'playlist-read-private%20playlist-modify-private%20playlist-modify-public'
-TOKENS_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Ref Projects\Bukola YT PJ\tokens.json'
+SPOTIFY_TOKENS_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Ref Projects\Bukola YT PJ\spotify_tokens.json'
 
 #MESSAGE VARIABLES
 now = datetime.now()
@@ -24,7 +24,7 @@ timestamp = now.strftime("%d/%m/%Y %H:%M:%S")
 class SpotifyHelper:
 
     @staticmethod   
-    def authorize():
+    def authorize() -> str:
 
         '''This function collects the authorization code from the flask server when the user gives its approval'''
 
@@ -45,7 +45,7 @@ class SpotifyHelper:
             # ***HERE NEEDS TO BE A CLOSING FUNCTION TO STOP THE APP.
 
         else:
-            with open(TOKENS_JSON_FILE_PATH) as f:
+            with open(SPOTIFY_TOKENS_JSON_FILE_PATH) as f:
               
                 data = json.load(f)
                 code = data['code']
@@ -62,7 +62,7 @@ class SpotifyHelper:
 
 
     @staticmethod   
-    def get_token(code):
+    def get_token(code) -> tuple[str]:
 
         '''This function request a token just after the authorization code is received, with a token and a refresh token no further authorization is needed to work'''
 
@@ -85,11 +85,11 @@ class SpotifyHelper:
             expiration_time_str = expiration_time.isoformat()+'Z'
             
             # Opening the tokens.json file to save the tokens
-            with open(TOKENS_JSON_FILE_PATH) as f:
+            with open(SPOTIFY_TOKENS_JSON_FILE_PATH) as f:
                 data = json.load(f)
 
             # Saving the updated tokens in the JSON file
-            with open(TOKENS_JSON_FILE_PATH, 'w') as f:
+            with open(SPOTIFY_TOKENS_JSON_FILE_PATH, 'w') as f:
                 data['access_token'] = access_token
                 data['refresh_token'] = refresh_token
                 data['expiration_time'] = expiration_time_str
@@ -127,11 +127,11 @@ class SpotifyHelper:
             expiration_time_str = expiration_time.isoformat()+'Z'
             
             # Opening the tokens.json file to save the tokens
-            with open(TOKENS_JSON_FILE_PATH) as f:
+            with open(SPOTIFY_TOKENS_JSON_FILE_PATH) as f:
                 data = json.load(f)
 
             # Saving the updated tokens in the JSON file
-            with open(TOKENS_JSON_FILE_PATH, 'w') as f:
+            with open(SPOTIFY_TOKENS_JSON_FILE_PATH, 'w') as f:
                 data['access_token'] = access_token
                 data['refresh_token'] = refresh_token
                 data['expiration_time'] = expiration_time_str
@@ -157,7 +157,7 @@ class SpotifyHelper:
         '''
 
         # Access token retrival
-        with open(TOKENS_JSON_FILE_PATH) as f:
+        with open(SPOTIFY_TOKENS_JSON_FILE_PATH) as f:
             data = json.load(f)
             token = data['access_token']
             expiration_time = datetime.fromisoformat(data['expiration_time'][:-1])  #The [:-1] is to take out the 'Z' parameter given we are computing this time later
@@ -167,3 +167,6 @@ class SpotifyHelper:
             token, refresh_token = SpotifyHelper.refresh_token(data['refresh_token'])
 
         return token
+
+
+
