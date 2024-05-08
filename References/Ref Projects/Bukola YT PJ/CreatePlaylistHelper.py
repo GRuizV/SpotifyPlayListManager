@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 import googleapiclient.errors
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
+from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
 
 
 
@@ -23,9 +25,9 @@ load_dotenv()
 SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 SPOTIFY_USER = os.getenv('SPOTIFY_USER')
-TOKENS_JSON_FILE_PATH = spotify_helper.TOKENS_JSON_FILE_PATH
+SPOTIFY_TOKENS_JSON_FILE_PATH = spotify_helper.SPOTIFY_TOKENS_JSON_FILE_PATH
 YT_JSON_FILE_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Ref Projects\Bukola YT PJ\youtube_client_secrets.json'
-
+PROJECTS_PATH = r'C:\Users\USUARIO\GR\Software Development\Projects\Spotify Playlists Manager\References\Ref Projects\Bukola YT PJ'
 
 
 
@@ -36,28 +38,43 @@ class CreatePlaylist:
     @staticmethod
     def get_youtube_client() -> googleapiclient.discovery.build:
 
-        '''This function creates a Youtube service which authenticates and is able to make API calls to Youtube server'''
-        
-        # *** Copied from Youtube's Data API Documentation
-        # Disable OAuthlib's HTTPS verification when running locally.
-        # *DO NOT* leave this option enabled in production.
+        '''This function authenticates the user using OAuth 2.0 and returns a service object for the YouTube API.'''
+            
         os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "0"
-
         api_service_name = "youtube"
         api_version = "v3"
         client_secrets_file = YT_JSON_FILE_PATH
-
-        # Get credentials and create an API client
         scopes = ["https://www.googleapis.com/auth/youtube.readonly"]
-        flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(client_secrets_file, scopes)
-        credentials = flow.run_local_server(port=0)        
 
-        #from the Youtube DATA API
-        youtube_client = googleapiclient.discovery.build(api_service_name, api_version, credentials=credentials)
+
+        # Load credentials from file if available
+        tokens_file_path = os.path.join(PROJECTS_PATH, 'youtube_tokens.json')
+        creds = None
+
+        if os.path.exists(tokens_file_path):
+            creds = Credentials.from_authorized_user_file(tokens_file_path)
+
+
+        # If there are no (valid) credentials available, let the user log in.
+        if not creds or not creds.valid:
+
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+                
+            else:
+                flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(client_secrets_file, scopes)
+                creds = flow.run_local_server(port=0)
+
+            # Save the credentials for the next run
+            with open(tokens_file_path, 'w') as token:
+                token.write(creds.to_json())
+
+
+        # Build the service
+        youtube_client = googleapiclient.discovery.build(api_service_name, api_version, credentials=creds)
 
         return youtube_client
-
-
+    
 
     # Step 2: Grab Liked Videos
     @staticmethod
@@ -162,6 +179,12 @@ class CreatePlaylist:
 
 
 
+
+
+
+'*** Mini Testing Suite ***'
+
+
 "'get_spotify_uri' functions testing"
 # art = 'Granuja'
 # song = 'Días de Perros'
@@ -190,11 +213,8 @@ class CreatePlaylist:
 
 
 "Testing the 'get_youtube_client' function"
-
 new_service = CreatePlaylist.get_youtube_client()
-
 print(new_service)
-
 
 
 
