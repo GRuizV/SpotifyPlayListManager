@@ -13,6 +13,7 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
+# import youtube_dl DEPRECATED!
 
 
 
@@ -76,11 +77,47 @@ class CreatePlaylist:
         return youtube_client
     
 
+    ''' This function at the end is deprecated since youtube_dl is no longer being supported '''
     # Step 2: Grab Liked Videos
-    @staticmethod
-    def get_liked_videos():
-        pass
-    
+    # @staticmethod
+    # def get_liked_videos(youtube_client:googleapiclient.discovery.build) -> dict:
+        
+    #     ''' This function will receive a youtube service comming from the get_youtube_client function and will return a dict with the relevant data of the liked videos '''
+
+    #     #Building the request
+    #     request = youtube_client.videos().list(part="snippet,contentDetails,statistics", myRating = "like")
+
+    #     #Sending the request to the Youtube API
+    #     response = request.execute()
+
+    #     #This dict will store the output
+    #     all_song_info = {}
+
+    #     #Collecting the relevant data from each video
+    #     for item in response["items"]:
+
+    #         video_title = item["snippet"]["title"]
+    #         youtube_url = f'https://www.youtube.com/watch?v={item["id"]}'
+
+    #         #Use youtube_dl to collect the song name & artist name
+    #         video = youtube_dl.YoutubeDL({}).extract_info(youtube_url, download=False)
+
+    #         song_name = video["track"]
+    #         artist = video["artist"]
+
+    #         #Storing the relevant info in the dict
+    #         all_song_info[video_title] = {
+
+    #             "youtube_url" : youtube_url,
+    #             "song_name" : song_name,
+    #             "artist" : artist,
+
+    #             #addind the Spotify URI, easy to get song to put into a playlist
+    #             "spotify_uri" : CreatePlaylist.get_spotify_uri(song_name=song_name, artist=artist)
+    #         }
+
+    #     return all_song_info    
+
 
     # Step 3: Create a New Playlist
     @staticmethod
@@ -197,7 +234,6 @@ class CreatePlaylist:
 
 
 
-
 'Accessing to the YT client secrets'
 # with open(YT_JSON_FILE_PATH) as f:
     
@@ -213,8 +249,20 @@ class CreatePlaylist:
 
 
 "Testing the 'get_youtube_client' function"
-new_service = CreatePlaylist.get_youtube_client()
-print(new_service)
+# new_service = CreatePlaylist.get_youtube_client()
+# print(new_service)
+
+
+
+
+"Testing the 'get_youtube_client' function"
+# new_service = CreatePlaylist.get_youtube_client()
+
+# song_data =CreatePlaylist.get_liked_videos(new_service)
+
+# print(song_data)
+
+'This test failed due to the support of the youtube_dl library'
 
 
 
