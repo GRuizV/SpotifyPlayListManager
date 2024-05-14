@@ -42,7 +42,7 @@ class SpotifyHelper:
         if confirmation_response == 'exit':
             print(f'\n[{timestamp}] - Closing down... (Remember to shut down the server!)')
 
-            # ***HERE NEEDS TO BE A CLOSING FUNCTION TO STOP THE APP.
+           
 
         else:
             with open(SPOTIFY_TOKENS_JSON_FILE_PATH) as f:
