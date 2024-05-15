@@ -106,7 +106,7 @@ new_service = CreatePlaylist.get_youtube_client()
 
 songs_data = CreatePlaylist.get_liked_videos(new_service)
 
-# print(songs_data)
+print(songs_data)
 
 '''
 Notes:

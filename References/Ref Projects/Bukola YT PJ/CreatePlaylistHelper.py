@@ -1,9 +1,3 @@
-# Step 1: Log into Youtube
-# Step 2: Grab Liked Videos
-# Step 3: Create a New Playlist
-# Step 4: Search for the Song
-# Step 5: Add this son into the new Spotify playlist
-
 import os
 import json, requests
 import spotify_helper
@@ -14,6 +8,8 @@ import googleapiclient.discovery
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 # import youtube_dl DEPRECATED!
+import yt_dlp as youtube_dl
+import re
 
 
 
@@ -76,47 +72,68 @@ class CreatePlaylist:
 
         return youtube_client
     
-
-    ''' This function at the end is deprecated since youtube_dl is no longer being supported '''
+    
+    # This function at the end is deprecated since youtube_dl is no longer being supported
+    # Nevertheless a fair substitute
     # Step 2: Grab Liked Videos
-    # @staticmethod
-    # def get_liked_videos(youtube_client:googleapiclient.discovery.build) -> dict:
+    @staticmethod
+    def get_liked_videos() -> list:
         
-    #     ''' This function will receive a youtube service comming from the get_youtube_client function and will return a dict with the relevant data of the liked videos '''
+        ''' This function will receive a youtube service comming from the get_youtube_client function and will return a dict with the relevant data of the liked videos '''
 
-    #     #Building the request
-    #     request = youtube_client.videos().list(part="snippet,contentDetails,statistics", myRating = "like")
+        # Create the new youtube service
+        youtube_client = CreatePlaylist.get_youtube_client()
 
-    #     #Sending the request to the Youtube API
-    #     response = request.execute()
+        #Building the request
+        request = youtube_client.videos().list(part="snippet,contentDetails,statistics", myRating = "like")
 
-    #     #This dict will store the output
-    #     all_song_info = {}
+        #Sending the request to the Youtube API
+        response = request.execute()
 
-    #     #Collecting the relevant data from each video
-    #     for item in response["items"]:
+        #This dict will store the output
+        all_song_info = []
 
-    #         video_title = item["snippet"]["title"]
-    #         youtube_url = f'https://www.youtube.com/watch?v={item["id"]}'
+        #Collecting the relevant data from each video
+        for item in response["items"]:
 
-    #         #Use youtube_dl to collect the song name & artist name
-    #         video = youtube_dl.YoutubeDL({}).extract_info(youtube_url, download=False)
+            video_title = item["snippet"]["title"]
+            youtube_url = f'https://www.youtube.com/watch?v={item["id"]}'
 
-    #         song_name = video["track"]
-    #         artist = video["artist"]
+            #Use youtube_dl to collect the song name & artist name
+            video = youtube_dl.YoutubeDL({}).extract_info(youtube_url, download=False)
 
-    #         #Storing the relevant info in the dict
-    #         all_song_info[video_title] = {
+            #Storing the relevant info in the dict
+            all_song_info.append((video['uploader'], video_title))
 
-    #             "youtube_url" : youtube_url,
-    #             "song_name" : song_name,
-    #             "artist" : artist,
 
-    #             #addind the Spotify URI, easy to get song to put into a playlist
-    #             "spotify_uri" : CreatePlaylist.get_spotify_uri(song_name=song_name, artist=artist)
-    #         }
+        # PARSING THE VIDEO TITLE TO DEDUCE THE SONG'S NAME
 
-    #     return all_song_info    
+        songs = []
+
+        # Regular expression pattern
+        pattern = re.compile(r'^(.+?)\s*-\s*(.+?)\s*[\(|\|].*') # this means "Match anything from the begning to the hyphen, and everything else from the hypen to the next '(' or '|'"
+
+        # Extractng song names
+        for artist, title in all_song_info:
+
+            match = pattern.match(title)
+            elem1, elem2 = None, None
+
+            if match:
+                elem1 = match.group(1)
+                elem2 = match.group(2)
+        
+
+            if elem1 and elem2:
+
+                art_name = artist.split()[0].casefold() #Sometimes the artist has a composed name
+
+                if art_name in elem1.casefold():
+                    songs.append((artist, elem2, CreatePlaylist.get_spotify_uri(song_name=elem2, artist=artist)))
+                else:
+                    songs.append((artist, elem1, CreatePlaylist.get_spotify_uri(song_name=elem2, artist=artist)))
+
+        return songs
 
 
     # Step 3: Create a New Playlist
@@ -198,19 +215,45 @@ class CreatePlaylist:
 
             print(e)
             return None
-    
 
-        
-
-
-
-
-        
-    
+   
     # Step 5: Add the song into the new Spotify playlist
     @staticmethod
-    def add_song_to_playlist():
-        pass 
+    def add_song_to_playlist() -> str:
+
+        ''' This function executes the whole app process: returns the id of the newly created playlist'''
+       
+        # Collect the song's uris
+        uris = [item[2] for item in CreatePlaylist.get_liked_videos()]
+
+        # Create the new playlist
+        playlist_id = CreatePlaylist.create_playlist()
+
+        # Add all songs into new playlist
+        request_data = json.dumps(uris)
+        query = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'
+
+        # Access token requesting
+        token = spotify_helper.SpotifyHelper.request_token()
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {token}"
+        }
+
+        # Sending the POST Request
+        try:            
+            response = requests.post(url=query, data=request_data, headers=headers)
+            response.raise_for_status()
+            response_json = response.json()
+
+            #Returning the ID of the newly created playlist
+            return print('\n\nThe playlist with your liked videos from Youtube was successfully created!\n\n')           
+
+        except Exception as e:
+
+            print(e)
+            return None
 
 
 
@@ -218,6 +261,7 @@ class CreatePlaylist:
 
 
 
+'===================================================================='
 
 '*** Mini Testing Suite ***'
 
@@ -258,14 +302,20 @@ class CreatePlaylist:
 "Testing the 'get_youtube_client' function"
 # new_service = CreatePlaylist.get_youtube_client()
 
-# song_data =CreatePlaylist.get_liked_videos(new_service)
+# song_data = CreatePlaylist.get_liked_videos(new_service)
 
-# print(song_data)
+# for i in song_data:
+#     print(i)
 
-'This test failed due to the support of the youtube_dl library'
-
-
-
+'This test initially failed due to the support of the youtube_dl library / it was replaced with yt_dlp library'
 
 
+
+
+'===================================================================='
+
+
+if __name__ == '__main__':
+
+    CreatePlaylist.add_song_to_playlist()
 
