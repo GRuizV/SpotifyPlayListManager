@@ -33,19 +33,30 @@ def callback():
 
     code = flask.request.args.get('code')
 
+    # if a code is received in the server
     if code:
 
-        with open(SPOTIFY_TOKENS_JSON_FILE_PATH) as f:
-            data = json.load(f)
+        try:
 
-        # Store the code in the tokens.json file ***Careful with the path***
+            # Try to open the JSON file to read the existing tokens
+            with open(SPOTIFY_TOKENS_JSON_FILE_PATH, 'r') as f:
+                data = json.load(f)
+
+        except json.JSONDecodeError:
+            # if the file doesn't exist, create an empty data dictionary
+            data = {}
+
+        # Update the data dictionary with the code received
+        data['code'] = code
+
+        # Store the code in the JSON file
         with open(SPOTIFY_TOKENS_JSON_FILE_PATH, 'w') as f:
-            data['code'] = code
             json.dump(data, f, indent=2)
 
         # Redirect to a success page
         return flask.redirect('/sucess')
     
+
     else:
         # Handle the case where the code is missing
         return 'Authorization code missing', 400
